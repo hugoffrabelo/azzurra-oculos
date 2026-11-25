@@ -160,3 +160,93 @@
   .artigo-titulo { font-size: 2.8rem; }
   .artigo-mais-lista { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* =========================================================
+ * Páginas de produto (produto/<id>.html)
+ * ========================================================= */
+.produto { max-width: 1100px; margin: 0 auto; padding: 22px 16px 60px; }
+.produto-trilha { font-size: var(--fs-8); color: var(--sonic-silver); margin-bottom: 20px; }
+.produto-trilha a { color: var(--sonic-silver); }
+.produto-trilha a:hover { color: var(--azul-logo); }
+.produto-trilha span { color: var(--card-1); }
+
+.produto-grid { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; }
+.produto-foto img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: calc(var(--border-radius-md) + 4px);
+  background: #f2f4f8;
+}
+.produto-nome {
+  font-family: var(--font-logo);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: var(--azul-logo);
+  margin: 4px 0 14px;
+}
+.produto-preco { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.produto-preco b { font-size: 1.9rem; color: var(--card-1); }
+.produto-preco del { color: var(--sonic-silver); }
+.produto-off { background: #a7c7ff; color: var(--card-1); font-size: var(--fs-9); font-weight: var(--weight-700); padding: 3px 8px; border-radius: 4px; }
+.produto-pix { color: #2823bc; font-weight: var(--weight-600); font-size: var(--fs-7); margin: 4px 0 16px; }
+.produto-desc { line-height: 1.8; margin-bottom: 18px; }
+
+.produto-specs { border-top: 1px solid var(--cultured); margin-bottom: 22px; }
+.produto-specs li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cultured);
+  font-size: var(--fs-7);
+}
+.produto-specs span { color: var(--sonic-silver); }
+.produto-specs b { color: var(--card-1); font-weight: var(--weight-600); text-align: right; }
+
+.produto-acoes { display: grid; gap: 10px; }
+.produto-btn {
+  display: block;
+  text-align: center;
+  background: #2823bc;
+  color: #ffffff;
+  font-size: var(--fs-7);
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 15px 20px;
+  border-radius: var(--border-radius-md);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+.produto-btn:hover { background: var(--azul-logo); }
+.produto-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.produto-btn--whats { background: transparent; color: var(--azul-logo); border: 2px solid var(--azul-logo); }
+.produto-btn--whats:hover { background: var(--azul-logo); color: #ffffff; }
+.produto-frete { font-size: var(--fs-8); color: var(--sonic-silver); margin-top: 12px; text-align: center; }
+
+.produto .artigo-mais { margin-top: 50px; }
+.produto-relacionados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.produto-rel img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--border-radius-md); margin-bottom: 8px; background: #f2f4f8; transition: opacity 0.2s ease; }
+.produto-rel:hover img { opacity: 0.85; }
+.produto-rel:hover .artigo-mais-nome { color: var(--azul-logo); }
+.produto-rel-preco { display: block; font-size: var(--fs-8); font-weight: var(--weight-700); color: var(--card-1); margin-top: 2px; }
+
+@media (min-width: 768px) {
+  .produto-grid { grid-template-columns: 1.1fr 1fr; gap: 48px; }
+  .produto-nome { font-size: 2.6rem; }
+  .produto-acoes { grid-template-columns: 1fr 1fr; }
+  .produto-relacionados { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.produto-trilha a, .produto-trilha span { display: inline; }
+
+/* páginas institucionais: campos a preencher ficam destacados */
+.preencher { background: #fff3b0; color: #5a4a00; padding: 0 4px; border-radius: 3px; font-weight: var(--weight-600); }
+
+/* página 404 */
+.pagina-404 { text-align: center; padding-top: 70px; padding-bottom: 90px; }
+.pagina-404 .artigo-titulo { max-width: 620px; margin-left: auto; margin-right: auto; }
+.destaque-404 { font-family: 'Parisienne', cursive; font-weight: 400; color: #a7c7ff; text-shadow: 0 1px 0 rgba(48, 44, 155, 0.55), 0 2px 6px rgba(48, 44, 155, 0.35); font-size: 1.2em; }
+.pagina-404-links { justify-content: center; margin-top: 26px; }
+.produto-foto img, .produto-rel img { height: auto; }

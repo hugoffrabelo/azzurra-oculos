@@ -27,6 +27,10 @@ const store = {
   set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch { /* modo privado */ } }
 };
 
+/* ---------- analytics (só envia se a pessoa aceitou os cookies; ver consentimento.js) ---------- */
+const evento = (nome, dados) => { if (window.azzurraEvento) window.azzurraEvento(nome, dados); };
+const itemGA = (p, qtd = 1) => ({ item_id: p.id, item_name: p.nome, item_brand: 'Azzurra', item_category: FORMATOS[p.formato], price: p.preco, quantity: qtd });
+
 /* ---------- imagens ---------- */
 const imgCache = {};
 /*
@@ -82,6 +86,7 @@ function carregarFotos() {
 }
 
 function estrelas(nota) {
+  if (!LOJA.mostrarAvaliacoes) return '';
   let html = '';
   for (let i = 1; i <= 5; i++) {
     const name = nota >= i ? 'star' : nota >= i - 0.5 ? 'star-half' : 'star-outline';
@@ -186,7 +191,7 @@ function renderVitrines() {
         <img src="${imagem(p)}" alt="${esc(p.nome)}" width="75" height="75" class="showcase-img">
       </a>
       <div class="showcase-content">
-        <a href="#" data-quickview-open="${p.id}"><h4 class="showcase-title">${esc(p.nome)}</h4></a>
+        <a href="./produto/${p.id}.html"><h4 class="showcase-title">${esc(p.nome)}</h4></a>
         ${estrelas(p.avaliacao)}
         ${precoBox(p, true)}
       </div>
@@ -266,7 +271,7 @@ function renderGrade() {
         </div>
         <div class="showcase-content">
           <a href="#produtos" class="showcase-category" data-filter="formato:${p.formato}">${FORMATOS[p.formato]} · ${esc(p.lente)}</a>
-          <a href="#" data-quickview-open="${p.id}"><h3 class="showcase-title">${esc(p.nome)}</h3></a>
+          <a href="./produto/${p.id}.html"><h3 class="showcase-title">${esc(p.nome)}</h3></a>
           ${estrelas(p.avaliacao)}
           ${precoBox(p)}
           <p class="pix-price">${brl(p.preco * (1 - LOJA.descontoPix))} no Pix</p>
@@ -307,6 +312,7 @@ function addToCart(id, qtd = 1) {
   if (item) item.qtd = nova; else state.sacola.push({ id, qtd: nova });
   saveCart();
   showToast(p);
+  evento('add_to_cart', { currency: 'BRL', value: p.preco * qtd, items: [itemGA(p, qtd)] });
 }
 
 function setQty(id, qtd) {
@@ -383,6 +389,7 @@ function checkout() {
     '',
     'Meu CEP: '
   ].join('\n');
+  evento('begin_checkout', { currency: 'BRL', value: total, items: state.sacola.map(i => itemGA(byId(i.id), i.qtd)) });
   window.open(`https://wa.me/${LOJA.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
 }
 
@@ -416,6 +423,7 @@ function openQuickview(id) {
       </div>
     </div>`;
   qv.hidden = false;
+  evento('view_item', { currency: 'BRL', value: p.preco, items: [itemGA(p)] });
   document.body.classList.add('no-scroll');
 }
 function closeQuickview() {
@@ -449,6 +457,7 @@ $('[data-modal-overlay]').addEventListener('click', closeModal);
 $('[data-newsletter-form]').addEventListener('submit', e => {
   e.preventDefault();
   // TODO: enviar o e-mail para sua ferramenta de e-mail marketing (ex.: Mailchimp, RD Station, Brevo).
+  evento('sign_up', { method: 'newsletter' });
   e.target.innerHTML = '<div class="newsletter-header"><h3 class="newsletter-title">Obrigado!</h3><p class="newsletter-desc">Em breve você recebe seu cupom por e-mail.</p></div>';
   setTimeout(closeModal, 2200);
 });
@@ -562,6 +571,9 @@ $('[data-search]').addEventListener('input', e => {
   state.busca = e.target.value.trim();
   renderGrade();
 });
+// sem avaliações reais, a ordenação "Melhor avaliados" não faz sentido
+if (!LOJA.mostrarAvaliacoes) { const opc = $('[data-sort] option[value="avaliacao"]'); if (opc) opc.remove(); }
+
 $('[data-sort]').addEventListener('change', e => {
   state.ordem = e.target.value;
   renderGrade();
@@ -597,6 +609,8 @@ carregarFotos();
       break;
     }
   }
+  // ?sacola=1 abre a sacola (usado pelo botão "Adicionar à sacola" das páginas de produto)
+  if (params.get('sacola') === '1') openCart();
 })();
 
 /* =========================================================

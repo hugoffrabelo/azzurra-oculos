@@ -30,10 +30,14 @@
 
 window.LOJA = {
   nome: 'Azzurra',
+  siteUrl: 'https://hugoffrabelo.github.io/azzurra-oculos/',   // troque pelo seu domínio quando tiver um
   whatsapp: '5500000000000',      // DDI + DDD + número, só dígitos. Troque pelo seu!
   instagram: 'https://instagram.com/',
   freteGratisAcima: 199,
-  descontoPix: 0.05                // 5% de desconto no Pix
+  descontoPix: 0.05,               // 5% de desconto no Pix
+  // As notas ("avaliacao") do catálogo ainda são de exemplo. Mostrar nota inventada pode ser
+  // considerado propaganda enganosa. Mude para true quando as notas forem de clientes reais.
+  mostrarAvaliacoes: false
 };
 
 window.PRODUTOS = [

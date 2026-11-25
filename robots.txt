@@ -1,0 +1,6 @@
+# Observação: no GitHub Pages (endereço usuario.github.io/azzurra-oculos) o Google só lê o robots.txt
+# da raiz do domínio. Este arquivo passa a valer quando a loja tiver domínio próprio.
+User-agent: *
+Allow: /
+
+Sitemap: https://hugoffrabelo.github.io/azzurra-oculos/sitemap.xml
