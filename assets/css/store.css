@@ -687,6 +687,9 @@ footer { background: var(--grad-royal-dark); }
   .product-grid .btn-action { font-size: 14px; padding: 4px; }
 }
 
+/* foto da janela de cadastro (newsletter): sempre quadrada, preenchendo o espaço */
+.newsletter-foto { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; }
+
 /* tags dos cards (desconto e "novo") em #a7c7ff */
 .product-grid .showcase-badge,
 .product-grid .showcase-badge.pink {
