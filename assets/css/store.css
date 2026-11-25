@@ -692,6 +692,13 @@ footer { background: var(--grad-royal-dark); }
   .slider-item { aspect-ratio: 4 / 5; max-height: none; }
   .slider-item .banner-img--foto { object-position: 38% 20%; }
   .banner-estilo .banner-content { bottom: 14px; left: 14px; right: 14px; padding: 14px 16px; }
+  /* contorno branco no texto cinza, para destacar sobre a foto */
+  .banner-estilo .banner-subtitle,
+  .banner-estilo .banner-text {
+    text-shadow:
+      -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff,
+      0 -1px 0 #ffffff, 0 1px 0 #ffffff, -1px 0 0 #ffffff, 1px 0 0 #ffffff;
+  }
 }
 
 /* SEO: o logo da home é o título principal (h1) sem mudar o visual */
