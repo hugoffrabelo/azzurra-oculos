@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="s1003" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#302c9b"/><stop offset="1" stop-color="#302c9b"/>
+</linearGradient>
+<linearGradient id="m1003" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#231f78"/><stop offset="1" stop-color="#231f78"/>
+</linearGradient>
+</defs>
+<rect width="1600" height="600" fill="url(#s1003)"/>
+<circle cx="960" cy="372" r="180" fill="#a9c3ff" opacity=".9"/>
+<rect y="396" width="1600" height="204.00000000000003" fill="url(#m1003)"/>
+<rect x="816" y="420" width="288" height="3" rx="2" fill="#a9c3ff" opacity="0.55"/><rect x="840" y="450" width="239.99999999999997" height="4" rx="2" fill="#a9c3ff" opacity="0.45000000000000007"/><rect x="864" y="486.00000000000006" width="191.99999999999997" height="5" rx="2" fill="#a9c3ff" opacity="0.35000000000000003"/><rect x="888" y="528" width="144" height="6" rx="2" fill="#a9c3ff" opacity="0.25"/>
+<g transform="translate(960,230) rotate(-6) scale(1.55)"><defs>
+<linearGradient id="g1003l" x1="0" y1="0" x2="0.3" y2="1">
+<stop offset="0" stop-color="#0c4cb7"/>
+<stop offset="0.55" stop-color="#2b6bd6"/>
+<stop offset="1" stop-color="#84c4ff"/>
+</linearGradient>
+<linearGradient id="g1003f" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#303030"/>
+<stop offset="1" stop-color="#000000"/>
+</linearGradient>
+</defs><path d="M -134,-26 L -158,-34" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<path d="M 134,-26 L 158,-34" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<path d="M -132,-30 Q 0,-52 132,-30 Q 140,8 112,34 Q 70,52 22,28 Q 0,18 -22,28 Q -70,52 -112,34 Q -140,8 -132,-30 Z" fill="url(#g1003l)" stroke="url(#g1003f)" stroke-width="7" stroke-linejoin="round"/>
+<path d="M -110,-24 Q -60,-38 -10,-36" stroke="#fff" stroke-opacity=".45" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+</svg>

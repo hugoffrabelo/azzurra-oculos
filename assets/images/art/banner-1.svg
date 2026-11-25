@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="s1001" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#302c9b"/><stop offset="1" stop-color="#302c9b"/>
+</linearGradient>
+<linearGradient id="m1001" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#231f78"/><stop offset="1" stop-color="#231f78"/>
+</linearGradient>
+</defs>
+<rect width="1600" height="600" fill="url(#s1001)"/>
+<circle cx="960" cy="372" r="180" fill="#dbe6ff" opacity=".9"/>
+<rect y="396" width="1600" height="204.00000000000003" fill="url(#m1001)"/>
+<rect x="816" y="420" width="288" height="3" rx="2" fill="#dbe6ff" opacity="0.55"/><rect x="840" y="450" width="239.99999999999997" height="4" rx="2" fill="#dbe6ff" opacity="0.45000000000000007"/><rect x="864" y="486.00000000000006" width="191.99999999999997" height="5" rx="2" fill="#dbe6ff" opacity="0.35000000000000003"/><rect x="888" y="528" width="144" height="6" rx="2" fill="#dbe6ff" opacity="0.25"/>
+<g transform="translate(960,230) rotate(-6) scale(1.7)"><defs>
+<linearGradient id="g1001l" x1="0" y1="0" x2="0.3" y2="1">
+<stop offset="0" stop-color="#1d2c1b"/>
+<stop offset="0.55" stop-color="#3c4b3a"/>
+<stop offset="1" stop-color="#6a7968"/>
+</linearGradient>
+<linearGradient id="g1001f" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#e8c169"/>
+<stop offset="1" stop-color="#b08931"/>
+</linearGradient>
+</defs><path d="M -116,-24 L -140,-32" stroke="#c9a24a" stroke-width="4" stroke-linecap="round"/>
+<path d="M 116,-24 L 140,-32" stroke="#c9a24a" stroke-width="4" stroke-linecap="round"/><path d="M -18,-30 Q 0,-40 18,-30" stroke="#c9a24a" stroke-width="4" fill="none"/>
+<path d="M -20,-16 Q 0,-28 20,-16" stroke="#c9a24a" stroke-width="4" fill="none"/><g transform="translate(-64,0)">
+<path d="M -50,-30 Q -4,-44 46,-30 Q 52,6 34,34 Q 6,56 -26,40 Q -54,18 -50,-30 Z" fill="url(#g1001l)" stroke="url(#g1001f)" stroke-width="4" stroke-linejoin="round"/>
+<path d="M -34,-22 Q -20,-32 4,-30" stroke="#fff" stroke-opacity=".5" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g><g transform="translate(64,0) scale(-1,1)">
+<path d="M -50,-30 Q -4,-44 46,-30 Q 52,6 34,34 Q 6,56 -26,40 Q -54,18 -50,-30 Z" fill="url(#g1001l)" stroke="url(#g1001f)" stroke-width="4" stroke-linejoin="round"/>
+<path d="M -34,-22 Q -20,-32 4,-30" stroke="#fff" stroke-opacity=".5" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g></g>
+</svg>

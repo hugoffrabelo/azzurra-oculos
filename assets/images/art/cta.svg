@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="s1004" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#302c9b"/><stop offset="1" stop-color="#302c9b"/>
+</linearGradient>
+<linearGradient id="m1004" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#231f78"/><stop offset="1" stop-color="#231f78"/>
+</linearGradient>
+</defs>
+<rect width="800" height="800" fill="url(#s1004)"/>
+<circle cx="400" cy="496" r="240" fill="#e3ecff" opacity=".9"/>
+<rect y="528" width="800" height="272" fill="url(#m1004)"/>
+<rect x="208" y="560" width="384" height="3" rx="2" fill="#e3ecff" opacity="0.55"/><rect x="240" y="600" width="320" height="4" rx="2" fill="#e3ecff" opacity="0.45000000000000007"/><rect x="272" y="648" width="255.99999999999997" height="5" rx="2" fill="#e3ecff" opacity="0.35000000000000003"/><rect x="304" y="704" width="192" height="6" rx="2" fill="#e3ecff" opacity="0.25"/>
+<g transform="translate(400,300) rotate(-6) scale(1.9)"><defs>
+<linearGradient id="g1004l" x1="0" y1="0" x2="0.3" y2="1">
+<stop offset="0" stop-color="#4c2b0c"/>
+<stop offset="0.55" stop-color="#6b4a2b"/>
+<stop offset="1" stop-color="#997859"/>
+</linearGradient>
+<linearGradient id="g1004f" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#5a4939"/>
+<stop offset="1" stop-color="#221101"/>
+</linearGradient>
+</defs><path d="M -116,-24 L -140,-32" stroke="#3b2a1a" stroke-width="4" stroke-linecap="round"/>
+<path d="M 116,-24 L 140,-32" stroke="#3b2a1a" stroke-width="4" stroke-linecap="round"/><path d="M -20,-14 Q 0,-30 20,-14" stroke="url(#g1004f)" stroke-width="5" fill="none" stroke-linecap="round"/><g transform="translate(-64,0)">
+<path d="M 0,-44 A 44,44 0 1 1 0,44 A 44,44 0 1 1 0,-44 Z" fill="url(#g1004l)" stroke="url(#g1004f)" stroke-width="4" stroke-linejoin="round"/>
+<path d="M -34,-22 Q -20,-32 4,-30" stroke="#fff" stroke-opacity=".5" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g><g transform="translate(64,0) scale(-1,1)">
+<path d="M 0,-44 A 44,44 0 1 1 0,44 A 44,44 0 1 1 0,-44 Z" fill="url(#g1004l)" stroke="url(#g1004f)" stroke-width="4" stroke-linejoin="round"/>
+<path d="M -34,-22 Q -20,-32 4,-30" stroke="#fff" stroke-opacity=".5" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g></g>
+</svg>

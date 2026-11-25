@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azzurra | Óculos de sol</title>
+  <meta name="description" content="Óculos de sol com proteção UV400: aviador, wayfarer, redondo, gatinho e mais. Frete grátis acima de R$ 199.">
+
+  <link rel="icon" href="./assets/images/art/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="./assets/css/style-prefix.css">
+  <link rel="stylesheet" href="./assets/css/store.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Parisienne&family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="overlay" data-overlay></div>
+
+  <!-- NEWSLETTER (aparece uma vez por visitante) -->
+  <div class="modal closed" data-modal>
+    <div class="modal-close-overlay" data-modal-overlay></div>
+    <div class="modal-content">
+      <button class="modal-close-btn" data-modal-close aria-label="Fechar">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+      <div class="newsletter-img">
+        <img src="./assets/images/art/newsletter.svg" alt="Óculos de sol ao pôr do sol" width="400" height="400">
+      </div>
+      <div class="newsletter">
+        <form action="#" data-newsletter-form>
+          <div class="newsletter-header">
+            <h3 class="newsletter-title">Ganhe 10% OFF</h3>
+            <p class="newsletter-desc">
+              Cadastre seu e-mail na <b class="footer-brand">Azzurra</b> e receba um cupom de boas-vindas e as novidades da coleção.
+            </p>
+          </div>
+          <input type="email" name="email" class="email-field" placeholder="Seu melhor e-mail" required>
+          <button type="submit" class="btn-newsletter">Quero meu cupom</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST (confirmação de "adicionado à sacola") -->
+  <div class="notification-toast closed" data-toast>
+    <button class="toast-close-btn" data-toast-close aria-label="Fechar">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+    <div class="toast-banner">
+      <img src="" alt="" width="80" height="70" data-toast-img>
+    </div>
+    <div class="toast-detail">
+      <p class="toast-message">Adicionado à sacola</p>
+      <p class="toast-title" data-toast-title></p>
+      <p class="toast-meta"><a href="#" data-cart-open>Ver sacola</a></p>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+
+    <div class="header-top">
+      <div class="container">
+        <ul class="header-social-container">
+          <li><a href="#" class="social-link" data-link-instagram aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a></li>
+          <li><a href="#" class="social-link" data-link-whatsapp aria-label="WhatsApp"><ion-icon name="logo-whatsapp"></ion-icon></a></li>
+        </ul>
+        <div class="header-alert-news">
+          <p><b>Frete grátis</b> em compras acima de <span data-frete-gratis>R$ 199</span></p>
+        </div>
+        <div class="header-top-actions">
+          <p class="header-pix"><ion-icon name="flash-outline"></ion-icon> <b data-pix-pct>5%</b> OFF no Pix</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="container">
+        <a href="#" class="header-logo">
+          <span class="brand-logo">Azzurra</span>
+        </a>
+
+        <form class="header-search-container" data-search-form role="search">
+          <input type="search" name="search" class="search-field" placeholder="Busque por aviador, polarizado, gatinho..." data-search>
+          <button class="search-btn" aria-label="Buscar">
+            <ion-icon name="search-outline"></ion-icon>
+          </button>
+        </form>
+
+        <div class="header-user-actions">
+          <button class="action-btn" data-wish-show aria-label="Favoritos">
+            <ion-icon name="heart-outline"></ion-icon>
+            <span class="count" data-wish-count>0</span>
+          </button>
+          <button class="action-btn" data-cart-open aria-label="Sacola">
+            <ion-icon name="bag-handle-outline"></ion-icon>
+            <span class="count" data-cart-count>0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="desktop-navigation-menu">
+      <div class="container">
+        <ul class="desktop-menu-category-list">
+          <li class="menu-category"><a href="#" class="menu-title" data-filter="">Início</a></li>
+          <li class="menu-category">
+            <a href="#produtos" class="menu-title">Formatos</a>
+            <ul class="dropdown-list" data-format-menu></ul>
+          </li>
+          <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:masculino">Masculino</a></li>
+          <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:feminino">Feminino</a></li>
+          <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:unissex">Unissex</a></li>
+          <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="lente:Polarizada">Polarizados</a></li>
+          <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="oferta:sim">Ofertas</a></li>
+          <li class="menu-category"><a href="#guia" class="menu-title">Guia</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-bottom-navigation">
+      <button class="action-btn" data-mobile-menu-open-btn aria-label="Menu">
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+      <button class="action-btn" data-cart-open aria-label="Sacola">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+        <span class="count" data-cart-count>0</span>
+      </button>
+      <a href="#" class="action-btn" aria-label="Início">
+        <ion-icon name="home-outline"></ion-icon>
+      </a>
+      <button class="action-btn" data-wish-show aria-label="Favoritos">
+        <ion-icon name="heart-outline"></ion-icon>
+        <span class="count" data-wish-count>0</span>
+      </button>
+      <button class="action-btn" data-mobile-menu-open-btn aria-label="Categorias">
+        <ion-icon name="grid-outline"></ion-icon>
+      </button>
+    </div>
+
+    <nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
+      <div class="menu-top">
+        <h2 class="menu-title">Menu</h2>
+        <button class="menu-close-btn" data-mobile-menu-close-btn aria-label="Fechar">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <ul class="mobile-menu-category-list">
+        <li class="menu-category"><a href="#" class="menu-title" data-filter="">Início</a></li>
+        <li class="menu-category">
+          <button class="accordion-menu" data-accordion-btn>
+            <p class="menu-title">Formatos</p>
+            <div>
+              <ion-icon name="add-outline" class="add-icon"></ion-icon>
+              <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            </div>
+          </button>
+          <ul class="submenu-category-list" data-accordion data-format-menu-mobile></ul>
+        </li>
+        <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:masculino">Masculino</a></li>
+        <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:feminino">Feminino</a></li>
+        <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="publico:unissex">Unissex</a></li>
+        <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="lente:Polarizada">Polarizados</a></li>
+        <li class="menu-category"><a href="#produtos" class="menu-title" data-filter="oferta:sim">Ofertas</a></li>
+        <li class="menu-category"><a href="#guia" class="menu-title">Guia</a></li>
+      </ul>
+      <div class="menu-bottom">
+        <ul class="menu-social-container">
+          <li><a href="#" class="social-link" data-link-instagram aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a></li>
+          <li><a href="#" class="social-link" data-link-whatsapp aria-label="WhatsApp"><ion-icon name="logo-whatsapp"></ion-icon></a></li>
+        </ul>
+      </div>
+    </nav>
+
+  </header>
+
+  <main>
+
+    <!-- BANNER -->
+    <div class="banner">
+      <div class="container">
+        <div class="slider-container has-scrollbar" data-slider>
+          <div class="slider-item banner-estilo">
+            <img src="./assets/images/banners/banner-aviador.jpg" alt="Modelo usando óculos aviador dourado com lente verde polarizada à beira-mar" class="banner-img banner-img--foto" width="1376" height="768">
+            <div class="banner-content banner-content--direita">
+              <p class="banner-subtitle">Clássico absoluto</p>
+              <h2 class="banner-title">Aviadores com lente <span class="destaque">polarizada</span></h2>
+              <p class="banner-text">a partir de R$ <b>189</b>,90</p>
+              <a href="#produtos" class="banner-btn" data-filter="formato:aviador">Ver aviadores</a>
+            </div>
+          </div>
+          <div class="slider-item banner-estilo">
+            <img src="./assets/images/banners/banner-feminino.jpg" data-fallback="./assets/images/art/banner-2.svg" alt="Modelo usando óculos gatinho bordô à beira-mar" class="banner-img banner-img--foto" width="1376" height="768">
+            <div class="banner-content banner-content--direita">
+              <p class="banner-subtitle">Coleção feminina</p>
+              <h2 class="banner-title"><span class="destaque">Gatinho</span>, oversized e redondos</h2>
+              <p class="banner-text">a partir de R$ <b>149</b>,90</p>
+              <a href="#produtos" class="banner-btn" data-filter="publico:feminino">Comprar agora</a>
+            </div>
+          </div>
+          <div class="slider-item banner-estilo">
+            <img src="./assets/images/banners/banner-esportivo.jpg" data-fallback="./assets/images/art/banner-3.svg" alt="Modelo usando óculos esportivo com lente azul espelhada na praia" class="banner-img banner-img--foto" width="1376" height="768">
+            <div class="banner-content banner-content--direita">
+              <p class="banner-subtitle">Ofertas de verão</p>
+              <h2 class="banner-title">Até <span class="destaque">25% OFF</span> em modelos selecionados</h2>
+              <p class="banner-text">e mais <b data-pix-pct>5%</b> no Pix</p>
+              <a href="#produtos" class="banner-btn" data-filter="oferta:sim">Ver ofertas</a>
+            </div>
+          </div>
+        </div>
+        <div class="slider-dots" data-slider-dots></div>
+      </div>
+    </div>
+
+    <!-- FAIXA DE FORMATOS (gerada a partir do catálogo, gira sem parar) -->
+    <nav class="marquee" aria-label="Formatos de óculos">
+      <div class="marquee-track" data-category-bar></div>
+    </nav>
+
+    <!-- PRODUTOS -->
+    <div class="product-container">
+      <div class="container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar has-scrollbar" data-mobile-menu>
+          <div class="sidebar-category">
+            <div class="sidebar-top">
+              <h2 class="sidebar-title">Filtrar</h2>
+              <button class="sidebar-close-btn" data-mobile-menu-close-btn aria-label="Fechar">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            </div>
+            <ul class="sidebar-menu-category-list" data-sidebar-filters></ul>
+          </div>
+
+          <div class="product-showcase">
+            <h3 class="showcase-heading">mais vendidos</h3>
+            <div class="showcase-wrapper">
+              <div class="showcase-container" data-best-sellers></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-box">
+
+          <!-- GRADE DE PRODUTOS -->
+          <div class="product-main" id="produtos">
+            <div class="grid-header">
+              <h2 class="title" data-grid-title>Todos os óculos</h2>
+              <div class="grid-tools">
+                <button class="filter-chip" data-clear-filter hidden>
+                  <span data-filter-label></span> <ion-icon name="close-outline"></ion-icon>
+                </button>
+                <select class="sort-select" data-sort aria-label="Ordenar">
+                  <option value="relevancia">Mais vendidos</option>
+                  <option value="menor">Menor preço</option>
+                  <option value="maior">Maior preço</option>
+                  <option value="avaliacao">Melhor avaliados</option>
+                </select>
+              </div>
+            </div>
+            <div class="product-grid" data-grid></div>
+            <p class="grid-empty" data-grid-empty hidden>Nenhum modelo encontrado. <a href="#" data-filter="">Ver todos</a></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVIÇOS -->
+    <div>
+      <div class="container">
+        <div class="testimonials-box servicos-faixa">
+
+          <div class="service">
+            <h2 class="title">Por que a Azzurra</h2>
+            <div class="service-container">
+              <div class="service-item">
+                <div class="service-icon"><ion-icon name="sunny-outline"></ion-icon></div>
+                <div class="service-content">
+                  <h3 class="service-title">Proteção UV400</h3>
+                  <p class="service-desc">Em todos os modelos</p>
+                </div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon"><ion-icon name="cube-outline"></ion-icon></div>
+                <div class="service-content">
+                  <h3 class="service-title">Frete grátis</h3>
+                  <p class="service-desc">Acima de <span data-frete-gratis>R$ 199</span></p>
+                </div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon"><ion-icon name="flash-outline"></ion-icon></div>
+                <div class="service-content">
+                  <h3 class="service-title">Desconto no Pix</h3>
+                  <p class="service-desc"><span data-pix-pct>5%</span> OFF à vista</p>
+                </div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon"><ion-icon name="arrow-undo-outline"></ion-icon></div>
+                <div class="service-content">
+                  <h3 class="service-title">Troca fácil</h3>
+                  <p class="service-desc">Até 7 dias após o recebimento</p>
+                </div>
+              </div>
+              <div class="service-item">
+                <div class="service-icon"><ion-icon name="logo-whatsapp"></ion-icon></div>
+                <div class="service-content">
+                  <h3 class="service-title">Atendimento</h3>
+                  <p class="service-desc">Pelo WhatsApp</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIA (blog) -->
+    <div class="blog" id="guia">
+      <div class="container">
+        <h2 class="title">Guia Azzurra</h2>
+        <div class="blog-container has-scrollbar">
+          <a class="blog-card" href="./guia/qual-oculos-combina-com-seu-rosto.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-1.jpg" data-fallback="./assets/images/art/guia-1.svg" alt="" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Estilo</p>
+              <h3 class="blog-title">Qual óculos combina com o formato do seu rosto?</h3>
+              <p class="blog-meta">Rosto redondo pede armações retas; rosto quadrado fica bem com redondos e aviadores.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
+          <a class="blog-card" href="./guia/uv400-o-que-significa.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-2.jpg" data-fallback="./assets/images/art/guia-2.svg" alt="" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Proteção</p>
+              <h3 class="blog-title">UV400: o que significa e por que importa</h3>
+              <p class="blog-meta">Lente escura sem filtro UV dilata a pupila e deixa entrar mais radiação. Sempre confira o selo.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
+          <a class="blog-card" href="./guia/polarizada-espelhada-ou-degrade.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-3.jpg" data-fallback="./assets/images/art/guia-3.svg" alt="" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Lentes</p>
+              <h3 class="blog-title">Polarizada, espelhada ou degradê?</h3>
+              <p class="blog-meta">Polarizada corta reflexos (ótima para dirigir e praia); espelhada é estilo; degradê é versátil.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
+          <a class="blog-card" href="./guia/como-limpar-e-guardar-seus-oculos.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-4.jpg" data-fallback="./assets/images/art/guia-4.svg" alt="" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Cuidados</p>
+              <h3 class="blog-title">Como limpar e guardar seus óculos</h3>
+              <p class="blog-meta">Água, sabão neutro e flanela. Nunca papel toalha, e sempre no estojo.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNER INFERIOR -->
+    <section class="banner-inferior" aria-label="Cupom de primeira compra">
+      <div class="container">
+        <div class="banner-inferior-box">
+          <div class="banner-inferior-texto">
+            <p class="banner-inferior-sub">Primeira compra</p>
+            <h2 class="banner-inferior-titulo">Ganhe 10% OFF na sua <span class="destaque">primeira</span> compra</h2>
+            <p class="banner-inferior-desc">Cadastre seu e-mail e receba o cupom na hora. Proteção UV400 em todos os modelos e frete grátis acima de <span data-frete-gratis>R$ 199</span>.</p>
+            <button class="banner-inferior-btn" data-abrir-newsletter>Quero meu cupom</button>
+          </div>
+          <div class="banner-inferior-fotos" aria-hidden="true">
+            <img src="./assets/images/products/cat-eye-bordo-1.jpg" alt="" class="bi-foto bi-foto--1" loading="lazy">
+            <img src="./assets/images/products/aviador-classic-dourado-1.jpg" alt="" class="bi-foto bi-foto--2" loading="lazy">
+            <img src="./assets/images/products/esportivo-azul-1.jpg" alt="" class="bi-foto bi-foto--3" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-nav">
+      <div class="container">
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Formatos</h2></li>
+          <li data-format-footer></li>
+        </ul>
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Loja</h2></li>
+          <li class="footer-nav-item"><a href="#produtos" class="footer-nav-link" data-filter="novo:sim">Lançamentos</a></li>
+          <li class="footer-nav-item"><a href="#produtos" class="footer-nav-link" data-filter="oferta:sim">Ofertas</a></li>
+          <li class="footer-nav-item"><a href="#produtos" class="footer-nav-link" data-filter="lente:Polarizada">Polarizados</a></li>
+          <li class="footer-nav-item"><a href="#guia" class="footer-nav-link">Guia</a></li>
+        </ul>
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Ajuda</h2></li>
+          <li class="footer-nav-item"><a href="#" class="footer-nav-link">Trocas e devoluções</a></li>
+          <li class="footer-nav-item"><a href="#" class="footer-nav-link">Prazos de entrega</a></li>
+          <li class="footer-nav-item"><a href="#" class="footer-nav-link">Política de privacidade</a></li>
+          <li class="footer-nav-item"><a href="#" class="footer-nav-link">Termos de uso</a></li>
+        </ul>
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Contato</h2></li>
+          <li class="footer-nav-item flex">
+            <div class="icon-box"><ion-icon name="logo-whatsapp"></ion-icon></div>
+            <a href="#" class="footer-nav-link" data-link-whatsapp>Fale com a gente</a>
+          </li>
+          <li class="footer-nav-item flex">
+            <div class="icon-box"><ion-icon name="mail-outline"></ion-icon></div>
+            <a href="mailto:contato@suaLoja.com.br" class="footer-nav-link">contato@sualoja.com.br</a>
+          </li>
+        </ul>
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Siga</h2></li>
+          <li>
+            <ul class="social-link">
+              <li class="footer-nav-item"><a href="#" class="footer-nav-link" data-link-instagram aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a></li>
+              <li class="footer-nav-item"><a href="#" class="footer-nav-link" data-link-whatsapp aria-label="WhatsApp"><ion-icon name="logo-whatsapp"></ion-icon></a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="payment-methods">Pix · Cartão de crédito · Boleto</p>
+        <p class="copyright">© <span data-year></span> Azzurra. Todos os direitos reservados. CNPJ 00.000.000/0001-00</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SACOLA (gaveta lateral) -->
+  <aside class="cart-drawer" data-cart aria-label="Sacola de compras">
+    <div class="cart-header">
+      <h2>Sua sacola</h2>
+      <button class="cart-close" data-cart-close aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+    </div>
+    <div class="cart-shipping" data-cart-shipping></div>
+    <ul class="cart-items" data-cart-items></ul>
+    <div class="cart-footer">
+      <div class="cart-row"><span>Subtotal</span><b data-cart-subtotal>R$ 0,00</b></div>
+      <div class="cart-row pix"><span>No Pix</span><b data-cart-pix>R$ 0,00</b></div>
+      <button class="cart-checkout" data-checkout>
+        <ion-icon name="logo-whatsapp"></ion-icon> Finalizar pelo WhatsApp
+      </button>
+      <p class="cart-note">Você confirma o pedido, frete e pagamento direto com a gente.</p>
+    </div>
+  </aside>
+
+  <!-- VISUALIZAÇÃO RÁPIDA -->
+  <div class="quickview" data-quickview hidden>
+    <div class="quickview-overlay" data-quickview-close></div>
+    <div class="quickview-card" role="dialog" aria-modal="true">
+      <button class="quickview-close" data-quickview-close aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+      <div data-quickview-body></div>
+    </div>
+  </div>
+
+  <script src="./assets/js/glasses-art.js"></script>
+  <script src="./assets/js/products.js"></script>
+  <script src="./assets/js/script.js"></script>
+  <script src="./assets/js/carrossel.js"></script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

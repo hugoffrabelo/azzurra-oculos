@@ -1,0 +1,11 @@
+# Documentos internos (prompts das imagens, plano de pagamento): ficam só no computador
+docs/
+
+# Arquivos do sistema e de editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.claude/
+node_modules/
+__pycache__/
