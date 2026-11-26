@@ -41,6 +41,23 @@
   let stream = null, loop = null, ultimoTempo = -1;
   let foto = null, pontosFoto = null;
 
+  // Mini guia "qual óculos combina com seu rosto" (resumo da matéria do Guia Azzurra)
+  const ROSTOS = [
+    { id: 'redondo', nome: 'Redondo', como: 'Altura e largura parecidas, bochechas cheias, maxilar suave.',
+      dica: 'Linhas retas dão estrutura ao rosto.', formatos: ['quadrado', 'wayfarer'] },
+    { id: 'quadrado', nome: 'Quadrado', como: 'Testa, maçãs e maxilar da mesma largura, queixo marcado.',
+      dica: 'Curvas suavizam o maxilar.', formatos: ['redondo', 'aviador', 'gatinho'] },
+    { id: 'oval', nome: 'Oval', como: 'Um pouco mais alto que largo, maçãs levemente mais largas.',
+      dica: 'O mais versátil: quase tudo combina. Só cuide da largura.', formatos: null },
+    { id: 'coracao', nome: 'Coração', como: 'Testa mais larga e queixo mais fino.',
+      dica: 'Armações finas equilibram a testa.', formatos: ['aviador', 'redondo'] },
+    { id: 'diamante', nome: 'Diamante', como: 'Maçãs do rosto bem largas, testa e queixo estreitos.',
+      dica: 'Destaque na parte de cima valoriza as maçãs.', formatos: ['gatinho', 'oversized'] }
+  ];
+  const NOME_FORMATO = { aviador: 'Aviador', wayfarer: 'Wayfarer', redondo: 'Redondo', gatinho: 'Gatinho',
+    quadrado: 'Quadrado', hexagonal: 'Hexagonal', oversized: 'Oversized', esportivo: 'Esportivo' };
+  const LINK_MATERIA = new URL('../guia/qual-oculos-combina-com-seu-rosto.html', BASE).href;
+
   const $ = (s, el = document) => el.querySelector(s);
   const byId = id => (window.PRODUTOS || []).find(p => p.id === id);
 
@@ -338,9 +355,22 @@
           <p class="provador-titulo">Provador virtual</p>
           <p class="provador-nome" data-pv-nome></p>
         </div>
-        <button class="provador-fechar" data-pv-fechar aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+        <div class="provador-topo-botoes">
+          <button class="provador-guia-btn" data-pv-guia aria-expanded="false"><ion-icon name="sparkles-outline"></ion-icon><span class="g-longo">Qual combina comigo?</span><span class="g-curto">Qual combina?</span></button>
+          <button class="provador-fechar" data-pv-fechar aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+        </div>
       </div>
       <div class="provador-painel">
+        <div class="provador-guia" data-pv-guia-painel hidden>
+          <div class="provador-guia-cabeca">
+            <p class="provador-guia-titulo">Qual é o formato do seu rosto?</p>
+            <button class="provador-guia-fechar" data-pv-guia-fechar aria-label="Fechar o guia"><ion-icon name="close-outline"></ion-icon></button>
+          </div>
+          <p class="provador-guia-sub">Prenda o cabelo e compare a testa, as maçãs do rosto e o maxilar. A regra de ouro é o contraste: rosto com curvas pede linhas retas, e vice-versa.</p>
+          <div class="provador-guia-rostos" data-pv-rostos></div>
+          <div class="provador-guia-resultado" data-pv-resultado hidden></div>
+          <a class="provador-guia-link" href="${LINK_MATERIA}" target="_blank" rel="noopener">Ler a matéria completa →</a>
+        </div>
         <div class="provador-lista" data-pv-lista></div>
         <div class="provador-acoes">
           <button class="provador-btn provador-btn--claro" data-pv-camera><ion-icon name="camera-outline"></ion-icon><span>Câmera</span></button>
@@ -387,6 +417,38 @@
       usarFoto(arq);
     });
     lista.addEventListener('click', e => { const b = e.target.closest('[data-pv-produto]'); if (b) escolher(b.dataset.pvProduto); });
+
+    // mini guia de rostos
+    const guiaBtn = $('[data-pv-guia]', modal), guia = $('[data-pv-guia-painel]', modal);
+    const resultado = $('[data-pv-resultado]', modal), rostos = $('[data-pv-rostos]', modal);
+    rostos.innerHTML = ROSTOS.map(r => `<button class="provador-rosto" data-pv-rosto="${r.id}" aria-pressed="false">${r.nome}</button>`).join('');
+    const abrirGuia = abrir => { guia.hidden = !abrir; guiaBtn.setAttribute('aria-expanded', String(abrir)); };
+    guiaBtn.addEventListener('click', () => abrirGuia(guia.hidden));
+    $('[data-pv-guia-fechar]', modal).addEventListener('click', () => abrirGuia(false));
+    rostos.addEventListener('click', e => {
+      const b = e.target.closest('[data-pv-rosto]');
+      if (!b) return;
+      const r = ROSTOS.find(x => x.id === b.dataset.pvRosto);
+      rostos.querySelectorAll('[data-pv-rosto]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      const formatos = r.formatos;
+      const nomes = formatos ? formatos.map(f => NOME_FORMATO[f]).join(', ') : 'todos os formatos';
+      resultado.innerHTML = `<p><b>${r.nome}:</b> ${r.como}</p><p>${r.dica} <b>Combinam: ${nomes}.</b>${formatos ? ' Os modelos indicados estão marcados com ★ abaixo.' : ''}</p>`;
+      resultado.hidden = false;
+      guia.classList.add('escolhido');          // esconde a explicação para ocupar menos a tela
+      // marca e traz para perto os óculos indicados
+      let primeiro = null;
+      lista.querySelectorAll('[data-pv-produto]').forEach(btn => {
+        const p = byId(btn.dataset.pvProduto);
+        const ok = !!formatos && formatos.includes(p.formato);
+        btn.classList.toggle('is-sugerido', ok);
+        if (ok && !primeiro) primeiro = btn;
+      });
+      if (primeiro) {
+        lista.scrollTo({ left: primeiro.offsetLeft - 8, behavior: 'smooth' });
+        if (!formatos.includes(produto.formato)) escolher(primeiro.dataset.pvProduto);
+      }
+      if (window.azzurraEvento) window.azzurraEvento('provador_guia_rosto', { rosto: r.id });
+    });
     btnSacola.addEventListener('click', () => {
       if (adicionado) {                     // 2º toque: vai para a sacola
         fechar();

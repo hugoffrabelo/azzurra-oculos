@@ -1086,3 +1086,58 @@ footer { background: var(--grad-royal-dark); }
 }
 .provador-ok[hidden] { display: none; }
 .provador-btn--sacola.is-ok { background: #a7c7ff; border-color: #a7c7ff; color: var(--azul-logo); }
+/* provador: mini guia "qual óculos combina com seu rosto" */
+.provador-topo-botoes { display: flex; align-items: center; gap: 8px; }
+.provador-guia-btn {
+  display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px;
+  border-radius: 999px; background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(6px);
+  color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+}
+.provador-guia-btn ion-icon { font-size: 17px; color: #a7c7ff; }
+.provador-guia-btn[aria-expanded="true"], .provador-guia-btn:hover { background: #fff; color: var(--azul-logo); }
+.provador-guia-btn[aria-expanded="true"] ion-icon, .provador-guia-btn:hover ion-icon { color: var(--azul-logo); }
+.provador-guia {
+  background: rgba(255, 255, 255, 0.97); color: var(--eerie-black);
+  border-radius: 14px; padding: 14px; max-height: 46vh; overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.provador-guia[hidden] { display: none; }
+.provador-guia-cabeca { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.provador-guia-titulo { font-family: var(--font-logo); font-weight: 600; font-size: 1.05rem; color: var(--azul-logo); }
+.provador-guia-fechar { font-size: 22px; color: var(--sonic-silver); display: flex; }
+.provador-guia-sub { font-size: 0.8rem; color: var(--sonic-silver); line-height: 1.45; margin: 6px 0 10px; }
+.provador-guia-rostos { display: flex; flex-wrap: wrap; gap: 6px; }
+.provador-rosto {
+  padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--azul-logo);
+  color: var(--azul-logo); font-size: 0.8rem; font-weight: 600; background: #fff;
+}
+.provador-rosto[aria-pressed="true"] { background: var(--azul-logo); color: #fff; }
+.provador-guia-resultado { margin-top: 10px; padding: 10px 12px; background: #eef1fb; border-radius: 10px; font-size: 0.82rem; line-height: 1.5; }
+.provador-guia-resultado b { color: var(--azul-logo); }
+.provador-guia-resultado[hidden] { display: none; }
+.provador-guia-link { display: inline-block; margin-top: 10px; font-size: 0.8rem; font-weight: 600; color: var(--azul-logo); text-decoration: underline; }
+.provador-item { position: relative; }
+.provador-item.is-sugerido::after {
+  content: '★'; position: absolute; top: -7px; right: -5px;
+  width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: #a7c7ff; color: var(--azul-logo); font-size: 12px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+.provador-lista { padding-top: 8px; }
+.provador-guia-btn .g-curto { display: none; }
+@media (max-width: 479px) {
+  .provador-guia-btn .g-longo { display: none; }
+  .provador-guia-btn .g-curto { display: inline; }
+  .provador-guia-btn { padding: 0 11px; font-size: 0.75rem; }
+  .provador-topo .provador-titulo { font-size: 1rem; }
+}
+@media (min-width: 1024px) { .provador-guia { width: 100%; max-width: 760px; } }
+
+.provador-guia.escolhido .provador-guia-sub { display: none; }
+.provador-guia.escolhido .provador-guia-rostos { margin-top: 8px; }
+@media (max-width: 479px) {
+  .provador-topo .provador-titulo { display: none; }          /* no celular fica só o nome do óculos */
+  .provador-topo .provador-nome { font-size: 1rem; font-weight: 600; color: #fff; margin-top: 8px; }
+  .provador-guia { padding: 12px; }
+  .provador-rosto { padding: 5px 10px; font-size: 0.75rem; }
+  .provador-guia-resultado { font-size: 0.78rem; padding: 8px 10px; }
+}
