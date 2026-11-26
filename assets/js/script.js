@@ -41,7 +41,6 @@ const imgCache = {};
  * Enquanto a foto não existir, mostra a ilustração.
  */
 const FOTOS = './assets/images/products/';
-const fotoOk = {};   // url -> true quando a foto carregou
 
 function caminhoFoto(p, variant) {
   // a foto do hover só é usada se "imagem2" for definida no products.js
@@ -57,33 +56,31 @@ function ilustracao(p, variant) {
   return imgCache[key];
 }
 
+// A foto é usada direto (sem mostrar a ilustração antes). Só se ela falhar ao carregar
+// é que a ilustração entra no lugar.
+const fotoFalhou = {};   // url -> true quando a foto não existe
+
 function imagem(p, variant = 'default') {
   const foto = caminhoFoto(p, variant);
-  if (foto && fotoOk[foto]) return foto;
+  if (foto && !fotoFalhou[foto]) return foto;
   // sem foto do hover: repete a principal (se existir) para não misturar foto com ilustração
-  if (variant === 'hover' && fotoOk[caminhoFoto(p, 'default')]) return caminhoFoto(p, 'default');
+  const principal = caminhoFoto(p, 'default');
+  if (variant === 'hover' && !fotoFalhou[principal]) return principal;
   return ilustracao(p, variant);
 }
 
-/* Testa as fotos em segundo plano e troca as ilustrações já na tela pelas que existirem */
-function carregarFotos() {
-  PRODUTOS.forEach(p => ['default', 'hover'].forEach(variant => {
-    const url = caminhoFoto(p, variant);
-    if (!url) return;
-    const teste = new Image();
-    teste.onload = () => {
-      const antes = { default: imagem(p, 'default'), hover: imagem(p, 'hover') };
-      fotoOk[url] = true;
-      const depois = { default: imagem(p, 'default'), hover: imagem(p, 'hover') };
-      for (const img of document.images) {
-        const src = img.getAttribute('src');
-        if (src === antes.default && depois.default !== antes.default) img.setAttribute('src', depois.default);
-        else if (src === antes.hover && depois.hover !== antes.hover) img.setAttribute('src', depois.hover);
-      }
-    };
-    teste.src = url;
-  }));
-}
+// foto que não carregou -> troca pela ilustração do produto
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (!(img instanceof HTMLImageElement)) return;
+  const src = img.getAttribute('src');
+  if (!src || src.startsWith('data:')) return;
+  const p = PRODUTOS.find(x => caminhoFoto(x, 'default') === src || caminhoFoto(x, 'hover') === src);
+  if (!p) return;
+  fotoFalhou[src] = true;
+  img.setAttribute('src', imagem(p, img.classList.contains('hover') ? 'hover' : 'default'));
+}, true);
+
 
 function estrelas(nota) {
   if (!LOJA.mostrarAvaliacoes) return '';
@@ -614,7 +611,6 @@ renderGrade();
 renderCart();
 updateCounts();
 bindAccordions();
-carregarFotos();
 
 // Links vindos de fora (ex.: matérias do Guia) podem abrir a loja já filtrada:
 // index.html?formato=aviador  |  ?lente=Polarizada  |  ?publico=feminino

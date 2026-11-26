@@ -53,10 +53,18 @@
   }
   </script>
 
-  <link rel="stylesheet" href="./assets/css/style-prefix.css">
-  <link rel="stylesheet" href="./assets/css/store.css">
+  <!-- fontes da primeira tela: baixadas logo no início, para não aparecer a fonte padrão antes -->
+  <link rel="preload" href="./assets/fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/poppins-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/poppins-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/playfair-display-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/parisienne-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/images/banners/banner-aviador.jpg" as="image" fetchpriority="high">
 
   <link rel="stylesheet" href="./assets/css/fonts.css">
+  <link rel="stylesheet" href="./assets/css/style-prefix.css">
+  <link rel="stylesheet" href="./assets/css/store.css">
 </head>
 
 <body>
