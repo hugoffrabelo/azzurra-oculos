@@ -1005,3 +1005,23 @@ footer { background: var(--grad-royal-dark); }
 .provador-aviso { margin-top: 10px; font-size: 0.75rem; color: var(--sonic-silver); line-height: 1.4; }
 .qv-provar { margin-top: 10px; width: 100%; }
 .provador input[type="file"] { display: none; }
+
+/* botão "Experimentar" sempre visível na foto do produto (no celular não existe "passar o mouse") */
+.card-provar {
+  position: absolute; left: 8px; bottom: 8px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255, 255, 255, 0.94); color: var(--azul-logo);
+  border: 1px solid rgba(48, 44, 155, 0.25); border-radius: 999px;
+  padding: 5px 10px; font-size: 0.72rem; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.card-provar ion-icon { font-size: 15px; }
+.card-provar:hover { background: var(--azul-logo); color: #fff; }
+/* telas de toque: botões do card (favoritar, detalhes, sacola) sempre visíveis */
+@media (hover: none) {
+  .product-grid .showcase-actions { transform: translateX(0); }
+  .product-grid .showcase-actions [data-provar] { display: none; }   /* já tem o botão "Experimentar" */
+}
+@media (max-width: 479px) {
+  .card-provar { left: 6px; bottom: 6px; padding: 4px 8px; font-size: 0.65rem; }
+}

@@ -58,11 +58,17 @@
     mostrarStatus('Carregando o provador… (só na primeira vez)');
     carregando = import(MP + 'vision_bundle.mjs').then(async ({ FaceLandmarker, FilesetResolver }) => {
       const arquivos = await FilesetResolver.forVisionTasks(MP + 'wasm');
-      landmarker = await FaceLandmarker.createFromOptions(arquivos, {
-        baseOptions: { modelAssetPath: MP + 'face_landmarker.task', delegate: 'GPU' },
+      const opcoes = delegate => ({
+        baseOptions: { modelAssetPath: MP + 'face_landmarker.task', delegate },
         runningMode: 'IMAGE',
         numFaces: 1
       });
+      try {
+        landmarker = await FaceLandmarker.createFromOptions(arquivos, opcoes('GPU'));
+      } catch (e) {
+        // alguns celulares não aceitam a placa de vídeo: usa o processador
+        landmarker = await FaceLandmarker.createFromOptions(arquivos, opcoes('CPU'));
+      }
       if (!modo) esconderStatus();       // pronto: some a mensagem de "carregando"
       return landmarker;
     }).catch(err => {

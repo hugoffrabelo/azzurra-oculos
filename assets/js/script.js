@@ -254,6 +254,7 @@ function renderGrade() {
           <img loading="lazy" decoding="async" src="${imagem(p)}" alt="${esc(p.nome)}" width="300" class="product-img default">
           <img loading="lazy" decoding="async" src="${imagem(p, 'hover')}" alt="" width="300" class="product-img hover">
           ${selo}
+          <button class="card-provar" data-provar="${p.id}" aria-label="Experimentar ${esc(p.nome)} no rosto"><ion-icon name="glasses-outline"></ion-icon> Experimentar</button>
           <div class="showcase-actions">
             <button class="btn-action ${fav ? 'is-fav' : ''}" data-fav="${p.id}" aria-label="Favoritar">
               <ion-icon name="${fav ? 'heart' : 'heart-outline'}"></ion-icon>
