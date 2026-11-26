@@ -9,10 +9,9 @@
  * Tudo roda no navegador: a imagem NÃO é enviada para nenhum servidor.
  * A biblioteca (~15 MB) só é baixada quando alguém abre o provador.
  *
- * Imagem do óculos: por enquanto usa a ilustração de frente (glasses-art.js).
- * Para usar uma foto real, crie assets/images/provador/<id>.png (óculos de frente,
- * fundo transparente, lentes centralizadas na altura y do meio da imagem) e
- * preencha "provador" no products.js com: { largura: <px entre os centros das lentes> }.
+ * Imagem do óculos: usa assets/images/provador/<id>.png quando o ID está em
+ * assets/images/provador/lista.json (gerados por tools/preparar-provador.py).
+ * Sem imagem real, usa a ilustração de frente do glasses-art.js.
  */
 (function () {
   const BASE = new URL('../', document.currentScript.src);          // .../assets/
@@ -27,10 +26,17 @@
   const AJUSTE = 1.12;
   // zoom máximo da câmera em tela cheia (1 = imagem inteira, sem corte)
   const ZOOM_MAX = 1.2;
+  // imagem real (PNG recortado): largura total do óculos em relação à distância entre os olhos
+  const LARGURA_REAL = 2.3;
+  // altura dos olhos dentro da imagem real (0 = topo da armação, 1 = base)
+  const OLHO_ALTURA = 0.42;
+  const PASTA_REAL = new URL('images/provador/', BASE).href;
 
   let fundo, fctx, convite, modal, video, canvas, ctx, status, lista, btnCamera, btnFoto, inputFoto, btnSalvar, btnSacola;
   let landmarker = null, carregando = null;
-  let produto = null, oculosImg = null;
+  let produto = null, oculosImg = null;   // oculosImg = { img, real }
+  let reais = null;                        // Promise<Set> com os IDs que têm imagem real
+  let adicionado = false;
   let modo = null;               // 'camera' | 'foto'
   let stream = null, loop = null, ultimoTempo = -1;
   let foto = null, pontosFoto = null;
@@ -45,12 +51,27 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-200 -100 400 200" width="800" height="400">
       <g opacity="0.96">${g}</g></svg>`;
   }
-  function carregarOculos(p) {
-    return new Promise(res => {
-      const img = new Image();
-      img.onload = () => res(img);
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOculos(p));
-    });
+  function listaReais() {
+    if (!reais) {
+      reais = fetch(PASTA_REAL + 'lista.json', { cache: 'no-cache' })
+        .then(r => (r.ok ? r.json() : []))
+        .then(l => new Set(Array.isArray(l) ? l : []))
+        .catch(() => new Set());
+    }
+    return reais;
+  }
+  function imagemOculos(p, real) {
+    return real ? PASTA_REAL + encodeURIComponent(p.id) + '.png'
+                : 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOculos(p));
+  }
+  async function carregarOculos(p) {
+    const real = (await listaReais()).has(p.id);
+    const abrir = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+    try {
+      return { img: await abrir(imagemOculos(p, real)), real };
+    } catch (e) {
+      return { img: await abrir(imagemOculos(p, false)), real: false };
+    }
   }
 
   /* ---------- MediaPipe ---------- */
@@ -95,13 +116,19 @@
     if (a.x > b.x) [a, b] = [b, a];
     const dist = Math.hypot(b.x - a.x, b.y - a.y);
     const ang = Math.atan2(b.y - a.y, b.x - a.x);
-    const dx = DX[produto.formato] || 64;
-    const esc = AJUSTE * dist / (2 * dx);                 // unidades do desenho -> pixels
     ctx.save();
     ctx.translate((a.x + b.x) / 2, (a.y + b.y) / 2);
     ctx.rotate(ang);
-    ctx.scale(esc, esc);
-    ctx.drawImage(oculosImg, -200, -100, 400, 200);
+    if (oculosImg.real) {
+      // foto recortada: a largura total acompanha a distância entre os olhos
+      const lw = dist * LARGURA_REAL, lh = oculosImg.img.height * lw / oculosImg.img.width;
+      ctx.drawImage(oculosImg.img, -lw / 2, -lh * OLHO_ALTURA, lw, lh);
+    } else {
+      const dx = DX[produto.formato] || 64;
+      const esc = AJUSTE * dist / (2 * dx);               // unidades do desenho -> pixels
+      ctx.scale(esc, esc);
+      ctx.drawImage(oculosImg.img, -200, -100, 400, 200);
+    }
     ctx.restore();
   }
 
@@ -263,7 +290,8 @@
       if (ativo) lista.scrollTo({ left: b.offsetLeft - (lista.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' });
     });
     $('[data-pv-nome]', modal).textContent = p.nome;
-    btnSacola.disabled = !p.estoque;
+    adicionado = false;
+    atualizarSacola();
     if (modo === 'foto') desenharFoto();
   }
 
@@ -303,6 +331,7 @@
         <canvas class="provador-canvas" aria-label="Seu rosto com o óculos escolhido"></canvas>
         <video class="provador-video" playsinline muted></video>
         <p class="provador-status" hidden></p>
+        <p class="provador-ok" data-pv-ok hidden role="status"></p>
       </div>
       <div class="provador-topo">
         <div>
@@ -317,7 +346,7 @@
           <button class="provador-btn provador-btn--claro" data-pv-camera><ion-icon name="camera-outline"></ion-icon><span>Câmera</span></button>
           <button class="provador-btn provador-btn--claro" data-pv-foto><ion-icon name="image-outline"></ion-icon><span>Foto</span></button>
           <button class="provador-btn provador-btn--claro" data-pv-salvar><ion-icon name="download-outline"></ion-icon><span>Salvar</span></button>
-          <button class="provador-btn provador-btn--sacola" data-pv-sacola><ion-icon name="bag-add-outline"></ion-icon><span>Adicionar à sacola</span></button>
+          <button class="provador-btn provador-btn--sacola" data-pv-sacola><ion-icon name="bag-add-outline"></ion-icon><span data-pv-sacola-texto>Adicionar à sacola</span></button>
         </div>
         <p class="provador-aviso">A imagem fica só no seu aparelho. O desenho do óculos é ilustrativo.</p>
       </div>
@@ -358,7 +387,28 @@
       usarFoto(arq);
     });
     lista.addEventListener('click', e => { const b = e.target.closest('[data-pv-produto]'); if (b) escolher(b.dataset.pvProduto); });
-    btnSacola.addEventListener('click', () => { if (typeof window.addToCart === 'function') window.addToCart(produto.id); });
+    btnSacola.addEventListener('click', () => {
+      if (adicionado) {                     // 2º toque: vai para a sacola
+        fechar();
+        if (typeof window.openCart === 'function') window.openCart();
+        return;
+      }
+      if (typeof window.addToCart !== 'function' || !produto.estoque) return;
+      window.addToCart(produto.id);
+      adicionado = true;
+      atualizarSacola();
+      const ok = $('[data-pv-ok]', modal);
+      ok.textContent = `${produto.nome} foi para a sacola`;
+      ok.hidden = false;
+      clearTimeout(ok._t);
+      ok._t = setTimeout(() => { ok.hidden = true; }, 2600);
+    });
+    // miniaturas com a imagem real, quando existir
+    listaReais().then(set => set.forEach(id => {
+      const im = lista.querySelector(`[data-pv-produto="${id}"] img`);
+      const p = byId(id);
+      if (im && p) im.src = imagemOculos(p, true);
+    }));
     btnSalvar.addEventListener('click', () => {
       canvas.toBlob(blob => {
         if (!blob) return;
@@ -376,13 +426,25 @@
     });
   }
 
+  function atualizarSacola() {
+    const t = $('[data-pv-sacola-texto]', modal);
+    const preco = produto.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    btnSacola.disabled = !produto.estoque;
+    btnSacola.classList.toggle('is-ok', adicionado);
+    btnSacola.querySelector('ion-icon').setAttribute('name', adicionado ? 'bag-handle-outline' : 'bag-add-outline');
+    t.textContent = !produto.estoque ? 'Esgotado'
+      : adicionado ? 'Na sacola ✓ · Ver sacola'
+      : `Adicionar à sacola · ${preco}`;
+  }
+
   // 1º passo: caixa perguntando se a pessoa quer experimentar
   function abrir(id) {
     if (!modal) criar();
     const p = byId(id) || produto || window.PRODUTOS[0];
     escolher(p.id);
     $('[data-cv-nome]', convite).textContent = p.nome;
-    $('[data-cv-img]', convite).src = window.GlassesArt.toDataURI(svgOculos(p));
+    $('[data-cv-img]', convite).src = imagemOculos(p, false);
+    listaReais().then(set => { if (set.has(p.id)) $('[data-cv-img]', convite).src = imagemOculos(p, true); });
     convite.hidden = false;
     document.body.classList.add('no-scroll');
     if (window.azzurraEvento) window.azzurraEvento('provador_convite', { item_id: p.id });

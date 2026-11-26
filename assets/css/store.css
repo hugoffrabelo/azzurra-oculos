@@ -1077,3 +1077,12 @@ footer { background: var(--grad-royal-dark); }
   object-fit: cover; filter: blur(24px) brightness(0.55); transform: scale(1.05);
 }
 .provador-palco .provador-canvas { position: relative; }
+/* provador: confirmação de "foi para a sacola" e botão depois de adicionar */
+.provador-ok {
+  position: absolute; left: 50%; top: 84px; transform: translateX(-50%); z-index: 3;
+  background: #fff; color: var(--azul-logo); font-weight: 600; font-size: 0.85rem;
+  padding: 8px 16px; border-radius: 999px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis;
+}
+.provador-ok[hidden] { display: none; }
+.provador-btn--sacola.is-ok { background: #a7c7ff; border-color: #a7c7ff; color: var(--azul-logo); }
