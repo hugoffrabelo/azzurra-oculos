@@ -694,6 +694,34 @@ footer { background: var(--grad-royal-dark); }
   .banner-estilo .banner-content { bottom: 14px; left: 14px; right: 14px; padding: 14px 16px; }
 }
 
+/* celular: texto fora da foto, numa faixa branca fixa logo abaixo da imagem */
+@media (max-width: 569px) {
+  .slider-container { align-items: stretch; }          /* todos os slides com a mesma altura */
+  .slider-item.banner-estilo {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--cultured);
+  }
+  .slider-item.banner-estilo .banner-img { height: auto; aspect-ratio: 4 / 5; flex-shrink: 0; }
+  .banner-estilo .banner-content {
+    position: static;
+    flex: 1;
+    transform: none;
+    max-width: none;
+    margin: 0;
+    padding: 16px 18px 18px;
+    background: #ffffff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-radius: 0;
+  }
+  .banner-estilo .banner-subtitle,
+  .banner-estilo .banner-title,
+  .banner-estilo .banner-text { text-shadow: none; }
+}
+
 /* contorno branco fino nas letras dos banners (celular e computador), para destacar sobre a foto.
    A palavra em Parisienne mantém a sombra azul própria. */
 .banner-estilo .banner-subtitle,
