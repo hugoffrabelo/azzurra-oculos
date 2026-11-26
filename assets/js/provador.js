@@ -26,7 +26,7 @@
   // óculos um pouco mais largo que a distância entre os olhos, como na vida real
   const AJUSTE = 1.12;
 
-  let modal, video, canvas, ctx, status, lista, btnCamera, btnFoto, inputFoto, btnSalvar, btnSacola;
+  let convite, modal, video, canvas, ctx, status, lista, btnCamera, btnFoto, inputFoto, btnSalvar, btnSacola;
   let landmarker = null, carregando = null;
   let produto = null, oculosImg = null;
   let modo = null;               // 'camera' | 'foto'
@@ -103,6 +103,26 @@
     ctx.restore();
   }
 
+  // Em tela cheia a imagem da câmera é cortada para preencher a tela; o corte acompanha o rosto
+  let foco = null;
+  function enquadrar(pts) {
+    // centro do rosto (0 a 1), já espelhado como a imagem na tela
+    const fx = 1 - (pts[33].x + pts[263].x) / 2;
+    const fy = (pts[33].y + pts[263].y) / 2;
+    // quanto da imagem cabe na tela com "cover"
+    const W = canvas.width, H = canvas.height, cw = canvas.clientWidth, ch = canvas.clientHeight;
+    if (!W || !cw) return;
+    const s = Math.max(cw / W, ch / H);
+    const vx = cw / (W * s), vy = ch / (H * s);
+    // object-position: p% alinha o ponto p% da imagem com p% da tela -> resolve para centralizar o rosto
+    const pos = (f, v) => v >= 1 ? 0.5 : Math.min(1, Math.max(0, (f - v / 2) / (1 - v)));
+    const alvo = { x: pos(fx, vx) * 100, y: pos(fy, vy) * 100 };
+    if (!foco) foco = alvo;
+    foco.x += (alvo.x - foco.x) * 0.2;                        // suaviza o movimento
+    foco.y += (alvo.y - foco.y) * 0.2;
+    canvas.style.objectPosition = `${foco.x.toFixed(1)}% ${foco.y.toFixed(1)}%`;
+  }
+
   function quadroCamera() {
     if (modo !== 'camera' || !video.videoWidth) { loop = requestAnimationFrame(quadroCamera); return; }
     const w = video.videoWidth, h = video.videoHeight;
@@ -116,7 +136,7 @@
       ultimoTempo = agora;
       const r = landmarker.detectForVideo(video, agora);
       const pts = r.faceLandmarks && r.faceLandmarks[0];
-      if (pts) { desenharOculos(pts, w, h, true); esconderStatus(); }
+      if (pts) { desenharOculos(pts, w, h, true); enquadrar(pts); esconderStatus(); }
       else mostrarStatus('Posicione o rosto de frente para a câmera');
     }
     loop = requestAnimationFrame(quadroCamera);
@@ -136,15 +156,20 @@
   async function usarCamera() {
     pararCamera();
     modo = 'camera';
+    modal.classList.add('modo-camera'); modal.classList.remove('modo-foto');
     foto = null;
-    btnSalvar.hidden = false;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       mostrarStatus('Seu navegador não permite usar a câmera aqui. Envie uma foto.');
       return;
     }
     try {
       mostrarStatus('Pedindo permissão para a câmera…');
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+      // tela em pé (celular): pede a câmera em pé também, para ocupar a tela toda sem cortar o rosto
+      const emPe = innerHeight > innerWidth;
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: emPe ? 720 : 1280 }, height: { ideal: emPe ? 1280 : 720 } },
+        audio: false
+      });
       video.srcObject = stream;
       await video.play();
       const lm = await iniciarModelo();
@@ -172,6 +197,8 @@
     if (!arquivo || !/^image\//.test(arquivo.type)) return;
     pararCamera();
     modo = 'foto';
+    modal.classList.add('modo-foto'); modal.classList.remove('modo-camera');
+    canvas.style.objectPosition = '';
     const url = URL.createObjectURL(arquivo);
     const img = new Image();
     img.onload = async () => {
@@ -179,7 +206,6 @@
       foto = img;
       pontosFoto = null;
       desenharFoto();
-      btnSalvar.hidden = false;
       try {
         const lm = await iniciarModelo();
         await lm.setOptions({ runningMode: 'IMAGE' });
@@ -221,7 +247,30 @@
     if (modo === 'foto') desenharFoto();
   }
 
+  const aspas = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
   function criar() {
+    /* ----- caixa de convite (aparece primeiro) ----- */
+    convite = document.createElement('div');
+    convite.className = 'provador-convite';
+    convite.hidden = true;
+    convite.setAttribute('role', 'dialog');
+    convite.setAttribute('aria-modal', 'true');
+    convite.setAttribute('aria-label', 'Experimentar no rosto');
+    convite.innerHTML = `
+      <div class="provador-convite-caixa">
+        <button class="provador-fechar" data-cv-fechar aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+        <img class="provador-convite-img" data-cv-img alt="">
+        <p class="provador-convite-titulo">Quer experimentar no seu rosto?</p>
+        <p class="provador-convite-texto">Veja como o <b data-cv-nome></b> fica em você, ao vivo pela câmera ou com uma foto.</p>
+        <button class="provador-btn" data-cv-camera><ion-icon name="camera-outline"></ion-icon> Usar a câmera</button>
+        <button class="provador-btn provador-btn--claro" data-cv-foto><ion-icon name="image-outline"></ion-icon> Enviar uma foto</button>
+        <button class="provador-convite-nao" data-cv-fechar>Agora não</button>
+        <p class="provador-aviso">A imagem fica só no seu aparelho: nada é enviado ou guardado.</p>
+      </div>`;
+    document.body.appendChild(convite);
+
+    /* ----- provador em tela cheia ----- */
     modal = document.createElement('div');
     modal.className = 'provador';
     modal.hidden = true;
@@ -229,31 +278,29 @@
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-label', 'Provador virtual');
     modal.innerHTML = `
-      <div class="provador-caixa">
-        <button class="provador-fechar" data-pv-fechar aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
-        <p class="provador-titulo">Provador virtual</p>
-        <div class="provador-palco">
-          <canvas class="provador-canvas" aria-label="Seu rosto com o óculos escolhido"></canvas>
-          <video class="provador-video" playsinline muted></video>
-          <div class="provador-inicio" data-pv-inicio>
-            <ion-icon name="glasses-outline"></ion-icon>
-            <p>Veja como o óculos fica no seu rosto.</p>
-          </div>
-          <p class="provador-status" hidden></p>
-        </div>
-        <div class="provador-botoes">
-          <button class="provador-btn" data-pv-camera>Usar a câmera</button>
-          <button class="provador-btn provador-btn--claro" data-pv-foto>Enviar uma foto</button>
-          <input type="file" accept="image/*" hidden data-pv-arquivo>
-        </div>
-        <div class="provador-lista" data-pv-lista></div>
-        <div class="provador-rodape">
+      <div class="provador-palco">
+        <canvas class="provador-canvas" aria-label="Seu rosto com o óculos escolhido"></canvas>
+        <video class="provador-video" playsinline muted></video>
+        <p class="provador-status" hidden></p>
+      </div>
+      <div class="provador-topo">
+        <div>
+          <p class="provador-titulo">Provador virtual</p>
           <p class="provador-nome" data-pv-nome></p>
-          <button class="provador-btn provador-btn--claro" data-pv-salvar hidden>Salvar imagem</button>
-          <button class="provador-btn" data-pv-sacola>Adicionar à sacola</button>
         </div>
-        <p class="provador-aviso">A imagem fica só no seu aparelho: nada é enviado ou guardado. O desenho do óculos é ilustrativo.</p>
-      </div>`;
+        <button class="provador-fechar" data-pv-fechar aria-label="Fechar"><ion-icon name="close-outline"></ion-icon></button>
+      </div>
+      <div class="provador-painel">
+        <div class="provador-lista" data-pv-lista></div>
+        <div class="provador-acoes">
+          <button class="provador-btn provador-btn--claro" data-pv-camera><ion-icon name="camera-outline"></ion-icon><span>Câmera</span></button>
+          <button class="provador-btn provador-btn--claro" data-pv-foto><ion-icon name="image-outline"></ion-icon><span>Foto</span></button>
+          <button class="provador-btn provador-btn--claro" data-pv-salvar><ion-icon name="download-outline"></ion-icon><span>Salvar</span></button>
+          <button class="provador-btn provador-btn--sacola" data-pv-sacola><ion-icon name="bag-add-outline"></ion-icon><span>Adicionar à sacola</span></button>
+        </div>
+        <p class="provador-aviso">A imagem fica só no seu aparelho. O desenho do óculos é ilustrativo.</p>
+      </div>
+      <input type="file" accept="image/*" data-pv-arquivo>`;
     document.body.appendChild(modal);
 
     video = $('video', modal);
@@ -268,14 +315,25 @@
     btnSacola = $('[data-pv-sacola]', modal);
 
     lista.innerHTML = window.PRODUTOS.map(p =>
-      `<button class="provador-item" data-pv-produto="${p.id}" aria-pressed="false" title="${p.nome.replace(/"/g, '&quot;')}">
-         <img src="${window.GlassesArt.toDataURI(svgOculos(p))}" alt="${p.nome.replace(/"/g, '&quot;')}">
+      `<button class="provador-item" data-pv-produto="${p.id}" aria-pressed="false" title="${aspas(p.nome)}">
+         <img src="${window.GlassesArt.toDataURI(svgOculos(p))}" alt="${aspas(p.nome)}">
        </button>`).join('');
 
-    const comecou = () => { const i = $('[data-pv-inicio]', modal); if (i) i.remove(); };
-    btnCamera.addEventListener('click', () => { comecou(); usarCamera(); });
+    // convite -> provador
+    $('[data-cv-camera]', convite).addEventListener('click', () => { abrirCheio(); usarCamera(); });
+    $('[data-cv-foto]', convite).addEventListener('click', () => inputFoto.click());
+    convite.addEventListener('click', e => { if (e.target === convite || e.target.closest('[data-cv-fechar]')) fecharConvite(); });
+
+    // dentro do provador
+    btnCamera.addEventListener('click', () => usarCamera());
     btnFoto.addEventListener('click', () => inputFoto.click());
-    inputFoto.addEventListener('change', () => { comecou(); usarFoto(inputFoto.files[0]); inputFoto.value = ''; });
+    inputFoto.addEventListener('change', () => {
+      const arq = inputFoto.files[0];
+      inputFoto.value = '';
+      if (!arq) return;
+      if (modal.hidden) abrirCheio();
+      usarFoto(arq);
+    });
     lista.addEventListener('click', e => { const b = e.target.closest('[data-pv-produto]'); if (b) escolher(b.dataset.pvProduto); });
     btnSacola.addEventListener('click', () => { if (typeof window.addToCart === 'function') window.addToCart(produto.id); });
     btnSalvar.addEventListener('click', () => {
@@ -288,23 +346,47 @@
         setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       }, 'image/jpeg', 0.9);
     });
-    modal.addEventListener('click', e => { if (e.target === modal || e.target.closest('[data-pv-fechar]')) fechar(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) fechar(); });
+    modal.addEventListener('click', e => { if (e.target.closest('[data-pv-fechar]')) fechar(); });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (!modal.hidden) fechar(); else if (!convite.hidden) fecharConvite();
+    });
   }
 
+  // 1º passo: caixa perguntando se a pessoa quer experimentar
   function abrir(id) {
     if (!modal) criar();
+    const p = byId(id) || produto || window.PRODUTOS[0];
+    escolher(p.id);
+    $('[data-cv-nome]', convite).textContent = p.nome;
+    $('[data-cv-img]', convite).src = window.GlassesArt.toDataURI(svgOculos(p));
+    convite.hidden = false;
+    document.body.classList.add('no-scroll');
+    if (window.azzurraEvento) window.azzurraEvento('provador_convite', { item_id: p.id });
+  }
+
+  function fecharConvite() {
+    convite.hidden = true;
+    if (modal.hidden) document.body.classList.remove('no-scroll');
+  }
+
+  // 2º passo: provador ocupando a tela inteira
+  function abrirCheio() {
+    convite.hidden = true;
     modal.hidden = false;
     document.body.classList.add('no-scroll');
-    escolher(id || (produto && produto.id) || window.PRODUTOS[0].id);
-    if (window.azzurraEvento) window.azzurraEvento('provador_aberto', { item_id: id });
-    iniciarModelo().catch(() => {});                        // já vai baixando enquanto a pessoa decide
+    // no celular (Android), esconde também as barras do navegador
+    if (modal.requestFullscreen && matchMedia('(hover: none)').matches) modal.requestFullscreen().catch(() => {});
+    if (window.azzurraEvento) window.azzurraEvento('provador_aberto', { item_id: produto && produto.id });
   }
+
 
   function fechar() {
     pararCamera();
     modo = null;
     modal.hidden = true;
+    modal.classList.remove('modo-camera', 'modo-foto');
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     document.body.classList.remove('no-scroll');
   }
 

@@ -941,70 +941,115 @@ footer { background: var(--grad-royal-dark); }
 
 /* =========================================================
  * PROVADOR VIRTUAL (assets/js/provador.js)
+ * 1) caixa de convite  2) provador em tela cheia
  * ========================================================= */
-.provador {
-  position: fixed; inset: 0; z-index: 30;
-  background: rgba(20, 18, 60, 0.6);
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-}
-.provador[hidden] { display: none; }
-.provador-caixa {
-  position: relative;
-  width: 100%; max-width: 560px; max-height: calc(100vh - 32px); overflow-y: auto;
-  background: #fff; border-radius: 14px; padding: 18px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
 .provador-fechar {
-  position: absolute; top: 10px; right: 10px; z-index: 2;
-  width: 34px; height: 34px; border-radius: 50%;
-  background: var(--azul-logo); color: #fff; font-size: 22px;
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  background: var(--azul-logo); color: #fff; font-size: 24px;
   display: flex; align-items: center; justify-content: center;
 }
-.provador-titulo {
-  font-family: var(--font-logo); font-weight: 600; font-size: 1.4rem;
-  color: var(--azul-logo); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
-}
-.provador-palco {
-  position: relative; background: #eef1f8; border-radius: 10px; overflow: hidden;
-  aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
-}
-.provador-canvas { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; display: block; }
-.provador-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.provador-inicio {
-  position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px;
-  align-items: center; justify-content: center; text-align: center; color: var(--azul-logo); padding: 20px;
-}
-.provador-inicio ion-icon { font-size: 54px; }
-.provador-inicio p { font-size: 0.95rem; color: var(--sonic-silver); }
-.provador-status {
-  position: absolute; left: 10px; right: 10px; bottom: 10px;
-  background: rgba(255, 255, 255, 0.92); color: var(--eerie-black);
-  border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; text-align: center;
-}
-.provador-status[hidden] { display: none; }
-.provador-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
 .provador-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   background: var(--azul-logo); color: #fff; border: 2px solid var(--azul-logo);
   border-radius: 8px; padding: 10px 12px; font-weight: 600; font-size: 0.85rem;
 }
+.provador-btn ion-icon { font-size: 18px; }
 .provador-btn:hover { background: var(--royal-1); border-color: var(--royal-1); }
 .provador-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .provador-btn--claro { background: #fff; color: var(--azul-logo); }
 .provador-btn--claro:hover { background: #eef1f8; color: var(--azul-logo); }
-.provador-lista { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+.provador-aviso { font-size: 0.75rem; color: var(--sonic-silver); line-height: 1.4; }
+.qv-provar { margin-top: 10px; width: 100%; }
+
+/* ---------- 1) caixa de convite ---------- */
+.provador-convite {
+  position: fixed; inset: 0; z-index: 30;
+  background: rgba(20, 18, 60, 0.6);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.provador-convite[hidden] { display: none; }
+.provador-convite-caixa {
+  position: relative; width: 100%; max-width: 380px;
+  background: #fff; border-radius: 16px; padding: 26px 22px 20px;
+  display: flex; flex-direction: column; gap: 10px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.provador-convite-caixa .provador-fechar { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; font-size: 20px; }
+.provador-convite-img { width: 180px; height: 90px; object-fit: contain; margin: 0 auto 4px; }
+.provador-convite-titulo {
+  font-family: var(--font-logo); font-weight: 600; font-size: 1.35rem; line-height: 1.2;
+  color: var(--azul-logo);
+}
+.provador-convite-texto { font-size: 0.9rem; color: var(--sonic-silver); line-height: 1.5; margin-bottom: 6px; }
+.provador-convite-texto b { color: var(--eerie-black); font-weight: 600; }
+.provador-convite-caixa .provador-btn { width: 100%; padding: 12px; font-size: 0.9rem; }
+.provador-convite-nao { color: var(--sonic-silver); font-size: 0.85rem; padding: 6px; text-decoration: underline; }
+.provador-convite-caixa .provador-aviso { margin-top: 4px; }
+
+/* ---------- 2) provador em tela cheia ---------- */
+.provador {
+  position: fixed; inset: 0; z-index: 31;
+  width: 100vw; height: 100vh; height: 100dvh;
+  background: #0f0e24; color: #fff; overflow: hidden;
+}
+.provador[hidden] { display: none; }
+.provador-palco { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.provador-canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
+.provador.modo-camera .provador-canvas { object-fit: cover; }   /* câmera ocupa a tela toda */
+.provador-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.provador input[type="file"] { display: none; }
+.provador-status {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  max-width: calc(100% - 40px);
+  background: rgba(255, 255, 255, 0.94); color: var(--eerie-black);
+  border-radius: 10px; padding: 10px 16px; font-size: 0.9rem; text-align: center;
+}
+.provador-status[hidden] { display: none; }
+
+.provador-topo {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: max(14px, env(safe-area-inset-top)) 16px 30px;
+  background: linear-gradient(rgba(15, 14, 36, 0.75), rgba(15, 14, 36, 0));
+}
+.provador-titulo {
+  font-family: var(--font-logo); font-weight: 600; font-size: 1.2rem;
+  text-transform: uppercase; letter-spacing: 1px; color: #fff;
+}
+.provador-nome { font-size: 0.9rem; color: #a7c7ff; font-weight: 500; margin-top: 2px; }
+.provador-topo .provador-fechar { background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(6px); }
+.provador-topo .provador-fechar:hover { background: var(--azul-logo); }
+
+.provador-painel {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding: 36px 16px max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(rgba(15, 14, 36, 0), rgba(15, 14, 36, 0.85) 35%);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.provador-lista { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.provador-lista::-webkit-scrollbar { display: none; }
 .provador-item {
-  flex: 0 0 76px; height: 46px; border-radius: 8px; border: 2px solid var(--cultured);
-  background: #f6f7fb; padding: 4px; scroll-snap-align: start;
+  flex: 0 0 78px; height: 48px; border-radius: 10px; border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.92); padding: 4px; scroll-snap-align: start;
 }
 .provador-item img { width: 100%; height: 100%; object-fit: contain; }
-.provador-item[aria-pressed="true"] { border-color: var(--azul-logo); background: #eef1fb; }
-.provador-rodape { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-.provador-nome { flex: 1 1 100%; font-weight: 600; color: var(--eerie-black); }
-.provador-rodape .provador-btn { flex: 1; }
-.provador-aviso { margin-top: 10px; font-size: 0.75rem; color: var(--sonic-silver); line-height: 1.4; }
-.qv-provar { margin-top: 10px; width: 100%; }
-.provador input[type="file"] { display: none; }
+.provador-item[aria-pressed="true"] { border-color: #a7c7ff; background: #fff; box-shadow: 0 0 0 2px var(--azul-logo); }
+.provador-acoes { display: grid; grid-template-columns: repeat(3, auto) 1fr; gap: 8px; }
+.provador-painel .provador-btn--claro { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.provador-painel .provador-btn--claro:hover { background: rgba(255, 255, 255, 0.26); color: #fff; }
+.provador-btn--sacola { background: #fff; color: var(--azul-logo); border-color: #fff; }
+.provador-btn--sacola:hover { background: #a7c7ff; border-color: #a7c7ff; color: var(--azul-logo); }
+.provador-painel .provador-aviso { color: rgba(255, 255, 255, 0.65); text-align: center; }
+@media (max-width: 479px) {
+  .provador-acoes { grid-template-columns: repeat(3, 1fr); }
+  .provador-acoes .provador-btn--claro { flex-direction: column; gap: 2px; padding: 8px 4px; font-size: 0.72rem; }
+  .provador-btn--sacola { grid-column: 1 / -1; padding: 12px; }
+}
+@media (min-width: 1024px) {
+  .provador-painel { align-items: center; }
+  .provador-lista, .provador-acoes { width: 100%; max-width: 760px; }
+  .provador-lista { justify-content: safe center; }
+}
 
 /* botão "Experimentar" sempre visível na foto do produto (no celular não existe "passar o mouse") */
 .card-provar {
