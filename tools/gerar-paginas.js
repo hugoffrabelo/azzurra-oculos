@@ -98,9 +98,7 @@ ${JSON.stringify(ld, null, 2).replace(/^/gm, '  ')}
   <link rel="stylesheet" href="../assets/css/style-prefix.css">
   <link rel="stylesheet" href="../assets/css/store.css">
   <link rel="stylesheet" href="../assets/css/guia.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Parisienne&family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/fonts.css">
 </head>
 <body class="pagina-guia">
 

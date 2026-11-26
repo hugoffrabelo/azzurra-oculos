@@ -56,10 +56,7 @@
   <link rel="stylesheet" href="./assets/css/style-prefix.css">
   <link rel="stylesheet" href="./assets/css/store.css">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Parisienne&family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/fonts.css">
 </head>
 
 <body>
@@ -74,7 +71,7 @@
         <ion-icon name="close-outline"></ion-icon>
       </button>
       <div class="newsletter-img">
-        <img src="./assets/images/banners/newsletter.jpg" data-fallback="./assets/images/art/newsletter.svg" alt="Modelo com óculos de sol Azzurra à beira-mar" width="400" height="400" class="newsletter-foto">
+        <img loading="lazy" decoding="async" src="./assets/images/banners/newsletter.jpg" data-fallback="./assets/images/art/newsletter.svg" alt="Modelo com óculos de sol Azzurra à beira-mar" width="400" height="400" class="newsletter-foto">
       </div>
       <div class="newsletter">
         <form action="#" data-newsletter-form>
@@ -234,7 +231,7 @@
       <div class="container">
         <div class="slider-container has-scrollbar" data-slider>
           <div class="slider-item banner-estilo">
-            <img src="./assets/images/banners/banner-aviador.jpg" alt="Modelo usando óculos aviador dourado com lente verde polarizada à beira-mar" class="banner-img banner-img--foto" width="1376" height="768">
+            <img fetchpriority="high" src="./assets/images/banners/banner-aviador.jpg" alt="Modelo usando óculos aviador dourado com lente verde polarizada à beira-mar" class="banner-img banner-img--foto" width="1376" height="768">
             <div class="banner-content banner-content--direita">
               <p class="banner-subtitle">Clássico absoluto</p>
               <h2 class="banner-title">Aviadores com lente <span class="destaque">polarizada</span></h2>
@@ -411,6 +408,24 @@
             </div>
           <span class="blog-ler">Ler matéria →</span>
           </a>
+          <a class="blog-card" href="./guia/oculos-de-sol-para-dirigir.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-5.jpg" data-fallback="./assets/images/art/guia-5.svg" alt="Motorista de óculos de sol ao volante com o sol do fim da tarde na estrada" loading="lazy" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Proteção</p>
+              <h3 class="blog-title">Óculos de sol para dirigir: qual lente escolher</h3>
+              <p class="blog-meta">Polarizada, lente cinza ou verde e nada de categoria 4 ao volante.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
+          <a class="blog-card" href="./guia/como-saber-se-o-oculos-de-sol-e-de-qualidade.html" target="_blank" rel="noopener">
+            <img src="./assets/images/guia/guia-6.jpg" data-fallback="./assets/images/art/guia-6.svg" alt="Óculos de sol sendo examinado contra a luz, com detalhe da lente e da dobradiça" loading="lazy" width="300" class="blog-banner">
+            <div class="blog-content">
+              <p class="blog-category">Proteção</p>
+              <h3 class="blog-title">Como saber se o óculos de sol é de qualidade</h3>
+              <p class="blog-meta">Cinco testes simples: UV400, distorção, polarização e acabamento.</p>
+            </div>
+          <span class="blog-ler">Ler matéria →</span>
+          </a>
         </div>
       </div>
     </div>
@@ -522,8 +537,8 @@
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/carrossel.js"></script>
 
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script type="module" src="./assets/vendor/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="./assets/vendor/ionicons/ionicons.js"></script>
 </body>
 
 </html>

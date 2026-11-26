@@ -188,7 +188,7 @@ function renderVitrines() {
   $('[data-best-sellers]').innerHTML = maisVendidos.slice(0, 4).map(p => `
     <div class="showcase">
       <a href="#" class="showcase-img-box" data-quickview-open="${p.id}">
-        <img src="${imagem(p)}" alt="${esc(p.nome)}" width="75" height="75" class="showcase-img">
+        <img loading="lazy" decoding="async" src="${imagem(p)}" alt="${esc(p.nome)}" width="75" height="75" class="showcase-img">
       </a>
       <div class="showcase-content">
         <a href="./produto/${p.id}.html"><h4 class="showcase-title">${esc(p.nome)}</h4></a>
@@ -254,8 +254,8 @@ function renderGrade() {
     return `
       <div class="showcase">
         <div class="showcase-banner">
-          <img src="${imagem(p)}" alt="${esc(p.nome)}" width="300" class="product-img default">
-          <img src="${imagem(p, 'hover')}" alt="" width="300" class="product-img hover">
+          <img loading="lazy" decoding="async" src="${imagem(p)}" alt="${esc(p.nome)}" width="300" class="product-img default">
+          <img loading="lazy" decoding="async" src="${imagem(p, 'hover')}" alt="" width="300" class="product-img hover">
           ${selo}
           <div class="showcase-actions">
             <button class="btn-action ${fav ? 'is-fav' : ''}" data-fav="${p.id}" aria-label="Favoritar">
@@ -317,10 +317,30 @@ function addToCart(id, qtd = 1) {
 
 function setQty(id, qtd) {
   const p = byId(id);
+  const antes = state.sacola.find(i => i.id === id)?.qtd || 0;
   if (qtd <= 0) state.sacola = state.sacola.filter(i => i.id !== id);
   else state.sacola.find(i => i.id === id).qtd = Math.min(p.estoque, qtd);
+  const depois = state.sacola.find(i => i.id === id)?.qtd || 0;
+  const dif = depois - antes;
+  if (dif < 0) evento('remove_from_cart', { currency: 'BRL', value: p.preco * -dif, items: [itemGA(p, -dif)] });
+  else if (dif > 0) evento('add_to_cart', { currency: 'BRL', value: p.preco * dif, items: [itemGA(p, dif)] });
   saveCart();
 }
+
+// cliques nos banners (carrossel e banner do cupom) viram "select_promotion" no analytics
+document.addEventListener('click', e => {
+  const b = e.target.closest('.slider-item .banner-btn, [data-abrir-newsletter]');
+  if (!b) return;
+  const slide = b.closest('.slider-item');
+  const slides = $$('.slider-item');
+  const titulo = (b.closest('.slider-item, .banner-inferior')?.querySelector('.banner-title, .banner-inferior-titulo')?.textContent || b.textContent)
+    .replace(/\s+/g, ' ').trim();
+  evento('select_promotion', {
+    promotion_id: slide ? `banner-${slides.indexOf(slide) + 1}` : 'banner-cupom',
+    promotion_name: titulo,
+    creative_slot: slide ? `carrossel-${slides.indexOf(slide) + 1}` : 'rodape'
+  });
+});
 
 function cartTotal() {
   return state.sacola.reduce((s, i) => s + (byId(i.id)?.preco || 0) * i.qtd, 0);

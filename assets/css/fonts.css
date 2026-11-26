@@ -1,0 +1,36 @@
+/* Fontes hospedadas no próprio site (antes vinham do Google Fonts).
+ * Arquivos em assets/fonts/, só o conjunto "latin" (cobre todo o português).
+ * Licença: SIL Open Font License 1.1 (veja assets/fonts/LICENSE-*.txt). */
+
+@font-face {
+  font-family: 'Poppins'; font-style: normal; font-weight: 300; font-display: swap;
+  src: url('../fonts/poppins-latin-300-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../fonts/poppins-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('../fonts/poppins-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../fonts/poppins-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('../fonts/poppins-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Bebas Neue'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../fonts/bebas-neue-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Parisienne'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../fonts/parisienne-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../fonts/playfair-display-latin-600-normal.woff2') format('woff2');
+}

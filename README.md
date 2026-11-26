@@ -38,3 +38,7 @@ As notas do catálogo são de exemplo e estão ocultas (`mostrarAvaliacoes: fals
 
 ## Domínio próprio
 Ao trocar de endereço, atualize `siteUrl` em `products.js`, rode `node tools/gerar-paginas.js` e troque `/azzurra-oculos/` por `/` no `404.html`.
+
+## Ícones e fontes (hospedados no próprio site)
+- Ícones: Ionicons 5.5.2 em `assets/vendor/ionicons/` (licença MIT). Só os ícones usados estão em `svg/`; para usar um ícone novo, copie o SVG dele do pacote `ionicons@5.5.2` para essa pasta.
+- Fontes: Poppins, Bebas Neue, Parisienne e Playfair Display em `assets/fonts/` (licença SIL OFL), declaradas em `assets/css/fonts.css`.
