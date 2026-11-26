@@ -639,11 +639,16 @@ carregarFotos();
     const m = ctx.measureText('A');
     const alt = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
     const larg = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-    tam = tam * Math.min(118 / alt, 118 / larg);
+    tam = tam * Math.min(108 / alt, 108 / larg);   // folga para o contorno caber
     ctx.font = `${peso} ${tam}px ${familia}`;
     const m2 = ctx.measureText('A');
     const y = 64 + (m2.actualBoundingBoxAscent - m2.actualBoundingBoxDescent) / 2;
     const x = 64 + (m2.actualBoundingBoxLeft - m2.actualBoundingBoxRight) / 2;
+    // contorno branco por fora da letra
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 10;
+    ctx.lineJoin = 'round';
+    ctx.strokeText('A', x, y);
     ctx.fillText('A', x, y);
     link.type = 'image/png';
     link.href = c.toDataURL('image/png');

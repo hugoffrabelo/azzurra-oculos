@@ -74,7 +74,7 @@ for (const [name, bg, g] of covers) {
 
 // Favicon provisório (letra A). No site, script.js redesenha com a fonte do logo.
 save('favicon.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <text x="32" y="54" text-anchor="middle" font-family="Playfair Display, Georgia, 'Times New Roman', serif" font-size="62" font-weight="700" fill="#302c9b">A</text>
+  <text x="32" y="52" text-anchor="middle" font-family="Playfair Display, Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" fill="#302c9b" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" paint-order="stroke">A</text>
 </svg>`);
 
 console.log('Artes geradas em', out);
