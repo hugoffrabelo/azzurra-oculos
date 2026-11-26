@@ -1141,3 +1141,18 @@ footer { background: var(--grad-royal-dark); }
   .provador-rosto { padding: 5px 10px; font-size: 0.75rem; }
   .provador-guia-resultado { font-size: 0.78rem; padding: 8px 10px; }
 }
+/* provador: botão "Qual combina comigo?" em destaque (azul-claro, brilho e pulso suave) */
+.provador-guia-btn {
+  background: #a7c7ff; color: var(--azul-logo); font-weight: 700;
+  box-shadow: 0 0 0 3px rgba(167, 199, 255, 0.35), 0 6px 18px rgba(0, 0, 0, 0.3);
+  animation: provador-pulso 2s ease-in-out 1s 4;
+}
+.provador-guia-btn ion-icon { color: var(--azul-logo); }
+.provador-guia-btn:hover, .provador-guia-btn[aria-expanded="true"] {
+  background: #fff; color: var(--azul-logo); animation: none;
+}
+@keyframes provador-pulso {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(167, 199, 255, 0.35), 0 6px 18px rgba(0, 0, 0, 0.3); transform: scale(1); }
+  50% { box-shadow: 0 0 0 9px rgba(167, 199, 255, 0.15), 0 6px 18px rgba(0, 0, 0, 0.3); transform: scale(1.05); }
+}
+@media (prefers-reduced-motion: reduce) { .provador-guia-btn { animation: none; } }

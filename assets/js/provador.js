@@ -9,7 +9,7 @@
  * Tudo roda no navegador: a imagem NÃO é enviada para nenhum servidor.
  * A biblioteca (~15 MB) só é baixada quando alguém abre o provador.
  *
- * Imagem do óculos: usa assets/images/provador/<id>.png quando o ID está em
+ * Imagem do óculos: usa assets/images/provador/<id>.webp quando o ID está em
  * assets/images/provador/lista.json (gerados por tools/preparar-provador.py).
  * Sem imagem real, usa a ilustração de frente do glasses-art.js.
  */
@@ -78,7 +78,7 @@
     return reais;
   }
   function imagemOculos(p, real) {
-    return real ? PASTA_REAL + encodeURIComponent(p.id) + '.png'
+    return real ? PASTA_REAL + encodeURIComponent(p.id) + '.webp'
                 : 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOculos(p));
   }
   async function carregarOculos(p) {
@@ -123,7 +123,8 @@
   function centroOlho(pts, ids, w, h, espelhar) {
     const x = (pts[ids[0]].x + pts[ids[1]].x) / 2;
     const y = (pts[ids[0]].y + pts[ids[1]].y) / 2;
-    return { x: (espelhar ? 1 - x : x) * w, y: y * h };
+    const z = (pts[ids[0]].z + pts[ids[1]].z) / 2;
+    return { x: (espelhar ? 1 - x : x) * w, y: y * h, z: z * w };   // z do MediaPipe usa a mesma escala do x
   }
 
   function desenharOculos(pts, w, h, espelhar) {
@@ -131,11 +132,16 @@
     let a = centroOlho(pts, OLHO_A, w, h, espelhar);
     let b = centroOlho(pts, OLHO_B, w, h, espelhar);
     if (a.x > b.x) [a, b] = [b, a];
-    const dist = Math.hypot(b.x - a.x, b.y - a.y);
+    const dist2d = Math.hypot(b.x - a.x, b.y - a.y);
+    // distância real entre os olhos (com profundidade): com a cabeça virada, a distância
+    // na tela "encolhe"; o tamanho usa a real e o óculos é achatado na horizontal
+    const dist = Math.max(dist2d, Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
+    const achatar = Math.max(0.55, dist2d / dist);
     const ang = Math.atan2(b.y - a.y, b.x - a.x);
     ctx.save();
     ctx.translate((a.x + b.x) / 2, (a.y + b.y) / 2);
     ctx.rotate(ang);
+    ctx.scale(achatar, 1);
     if (oculosImg.real) {
       // foto recortada: a largura total acompanha a distância entre os olhos
       const lw = dist * LARGURA_REAL, lh = oculosImg.img.height * lw / oculosImg.img.width;
@@ -378,7 +384,7 @@
           <button class="provador-btn provador-btn--claro" data-pv-salvar><ion-icon name="download-outline"></ion-icon><span>Salvar</span></button>
           <button class="provador-btn provador-btn--sacola" data-pv-sacola><ion-icon name="bag-add-outline"></ion-icon><span data-pv-sacola-texto>Adicionar à sacola</span></button>
         </div>
-        <p class="provador-aviso">A imagem fica só no seu aparelho. O desenho do óculos é ilustrativo.</p>
+        <p class="provador-aviso">A imagem fica só no seu aparelho. O resultado é uma simulação: tamanho e cores podem variar.</p>
       </div>
       <input type="file" accept="image/*" data-pv-arquivo>`;
     document.body.appendChild(modal);

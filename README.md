@@ -47,6 +47,6 @@ Ao trocar de endereço, atualize `siteUrl` em `products.js`, rode `node tools/ge
 - `assets/js/provador.js`: a pessoa usa a câmera ou envia uma foto; o MediaPipe Face Landmarker (Google, Apache 2.0) acha os olhos e o óculos é desenhado por cima. Tudo roda no navegador, nada é enviado.
 - Arquivos do MediaPipe em `assets/vendor/mediapipe/` (`@mediapipe/tasks-vision` 1.2.3 e o modelo `face_landmarker.task`). Só são baixados quando alguém abre o provador.
 - Abre pelo ícone de óculos no card, pelo botão na visualização rápida, ou com `index.html?provar=<id do produto>` (usado nas páginas de produto).
-- Imagem do óculos: se existir `assets/images/provador/<id>.png` (listado em `lista.json`), o provador usa a imagem real; senão usa a ilustração do `glasses-art.js`.
+- Imagem do óculos: se existir `assets/images/provador/<id>.webp` (listado em `lista.json`), o provador usa a imagem real; senão usa a ilustração do `glasses-art.js`.
 - Para adicionar imagens reais: salve as imagens de frente na pasta `fotos-provador` (ao lado de `site`) com o nome igual ao ID e rode `python site/tools/preparar-provador.py`. Ele tira o fundo liso, corta, reduz e atualiza a `lista.json`. Prompts em `docs/prompts-provador.md`.
 - Ajuste fino da posição: `LARGURA_REAL` (largura do óculos x distância entre os olhos) e `OLHO_ALTURA` no topo do `provador.js`.
