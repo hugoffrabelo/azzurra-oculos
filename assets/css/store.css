@@ -995,7 +995,7 @@ footer { background: var(--grad-royal-dark); }
 .provador[hidden] { display: none; }
 .provador-palco { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .provador-canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
-.provador.modo-camera .provador-canvas { object-fit: cover; }   /* câmera ocupa a tela toda */
+.provador.modo-camera .provador-canvas { transform-origin: 50% 50%; will-change: transform; }   /* zoom leve controlado pelo provador.js */
 .provador-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .provador input[type="file"] { display: none; }
 .provador-status {
@@ -1070,3 +1070,10 @@ footer { background: var(--grad-royal-dark); }
 @media (max-width: 479px) {
   .card-provar { left: 6px; bottom: 6px; padding: 4px 8px; font-size: 0.65rem; }
 }
+
+/* provador: fundo desfocado atrás da imagem (preenche as sobras da tela) */
+.provador-fundo {
+  position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px);
+  object-fit: cover; filter: blur(24px) brightness(0.55); transform: scale(1.05);
+}
+.provador-palco .provador-canvas { position: relative; }

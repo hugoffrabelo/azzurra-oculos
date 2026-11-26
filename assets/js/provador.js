@@ -25,8 +25,10 @@
   const DX = { oversized: 70 };
   // óculos um pouco mais largo que a distância entre os olhos, como na vida real
   const AJUSTE = 1.12;
+  // zoom máximo da câmera em tela cheia (1 = imagem inteira, sem corte)
+  const ZOOM_MAX = 1.2;
 
-  let convite, modal, video, canvas, ctx, status, lista, btnCamera, btnFoto, inputFoto, btnSalvar, btnSacola;
+  let fundo, fctx, convite, modal, video, canvas, ctx, status, lista, btnCamera, btnFoto, inputFoto, btnSalvar, btnSacola;
   let landmarker = null, carregando = null;
   let produto = null, oculosImg = null;
   let modo = null;               // 'camera' | 'foto'
@@ -109,18 +111,29 @@
     // centro do rosto (0 a 1), já espelhado como a imagem na tela
     const fx = 1 - (pts[33].x + pts[263].x) / 2;
     const fy = (pts[33].y + pts[263].y) / 2;
-    // quanto da imagem cabe na tela com "cover"
+    // A imagem aparece inteira ("contain") e ganha só um zoom leve (no máximo ZOOM_MAX)
+    // para preencher melhor a tela, centralizando o rosto. Sem isso, uma câmera deitada
+    // numa tela em pé ficava ampliada 3 a 4 vezes.
     const W = canvas.width, H = canvas.height, cw = canvas.clientWidth, ch = canvas.clientHeight;
     if (!W || !cw) return;
-    const s = Math.max(cw / W, ch / H);
-    const vx = cw / (W * s), vy = ch / (H * s);
-    // object-position: p% alinha o ponto p% da imagem com p% da tela -> resolve para centralizar o rosto
-    const pos = (f, v) => v >= 1 ? 0.5 : Math.min(1, Math.max(0, (f - v / 2) / (1 - v)));
-    const alvo = { x: pos(fx, vx) * 100, y: pos(fy, vy) * 100 };
+    const cabe = Math.min(cw / W, ch / H), cobre = Math.max(cw / W, ch / H);
+    const z = Math.min(cobre / cabe, ZOOM_MAX);
+    const dw = W * cabe * z, dh = H * cabe * z;                // tamanho na tela já com zoom
+    const limX = Math.max(0, (dw - cw) / 2), limY = Math.max(0, (dh - ch) / 2);
+    // espaço livre entre a barra de cima e o painel de baixo: o rosto fica no meio dele
+    const topo = modal.querySelector('.provador-topo').offsetHeight * 0.6;
+    const painel = modal.querySelector('.provador-painel').offsetHeight * 0.85;
+    const desl = (topo - painel) / 2;
+    const alvo = {
+      x: Math.max(-limX, Math.min(limX, -(fx - 0.5) * dw)),
+      y: limY > 0
+        ? Math.max(-limY, Math.min(limY, -(fy - 0.5) * dh + desl))
+        : Math.max(desl, -(ch - dh) / 2)                     // imagem menor que a tela: só sobe um pouco
+    };
     if (!foco) foco = alvo;
     foco.x += (alvo.x - foco.x) * 0.2;                        // suaviza o movimento
     foco.y += (alvo.y - foco.y) * 0.2;
-    canvas.style.objectPosition = `${foco.x.toFixed(1)}% ${foco.y.toFixed(1)}%`;
+    canvas.style.transform = `translate(${foco.x.toFixed(1)}px, ${foco.y.toFixed(1)}px) scale(${z.toFixed(3)})`;
   }
 
   function quadroCamera() {
@@ -138,6 +151,7 @@
       const pts = r.faceLandmarks && r.faceLandmarks[0];
       if (pts) { desenharOculos(pts, w, h, true); enquadrar(pts); esconderStatus(); }
       else mostrarStatus('Posicione o rosto de frente para a câmera');
+      pintarFundo();
     }
     loop = requestAnimationFrame(quadroCamera);
   }
@@ -150,6 +164,12 @@
     canvas.width = w; canvas.height = h;
     ctx.drawImage(foto, 0, 0, w, h);
     desenharOculos(pontosFoto, w, h, false);
+    pintarFundo();
+  }
+
+  // fundo desfocado com a própria imagem, para não sobrar faixa preta em volta
+  function pintarFundo() {
+    if (canvas.width) fctx.drawImage(canvas, 0, 0, fundo.width, fundo.height);
   }
 
   /* ---------- câmera e foto ---------- */
@@ -198,7 +218,7 @@
     pararCamera();
     modo = 'foto';
     modal.classList.add('modo-foto'); modal.classList.remove('modo-camera');
-    canvas.style.objectPosition = '';
+    canvas.style.transform = '';
     const url = URL.createObjectURL(arquivo);
     const img = new Image();
     img.onload = async () => {
@@ -279,6 +299,7 @@
     modal.setAttribute('aria-label', 'Provador virtual');
     modal.innerHTML = `
       <div class="provador-palco">
+        <canvas class="provador-fundo" width="48" height="64" aria-hidden="true"></canvas>
         <canvas class="provador-canvas" aria-label="Seu rosto com o óculos escolhido"></canvas>
         <video class="provador-video" playsinline muted></video>
         <p class="provador-status" hidden></p>
@@ -304,8 +325,10 @@
     document.body.appendChild(modal);
 
     video = $('video', modal);
-    canvas = $('canvas', modal);
+    canvas = $('.provador-canvas', modal);
     ctx = canvas.getContext('2d');
+    fundo = $('.provador-fundo', modal);
+    fctx = fundo.getContext('2d');
     status = $('.provador-status', modal);
     lista = $('[data-pv-lista]', modal);
     btnCamera = $('[data-pv-camera]', modal);
