@@ -35,6 +35,9 @@ ENTRADA = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(SIT
 LARGURA_MAX = 900
 TOLERANCIA = 28          # diferença de cor aceita como "fundo"
 # armações claras pedem tolerância menor para não serem apagadas junto com o fundo
+# lentes: quanto fica visível (1 = opaca). 0.82 deixa o olho aparecer de leve
+ALFA_LENTE = 0.82
+LIMITE_BORDA = 22        # força de borda que separa a lente da armação
 TOLERANCIA_POR_ID = {'cat-eye-branco': 8, 'quadrado-cristal': 14}
 
 
@@ -67,9 +70,9 @@ def remover_fundo(im, tol=TOLERANCIA):
     # buracos internos: grandes o suficiente e praticamente da cor exata do fundo
     tam = ndimage.sum(np.ones_like(rotulos), rotulos, index=np.arange(1, n + 1))
     media = ndimage.mean(dist, rotulos, index=np.arange(1, n + 1))
-    for i in range(n):
-        if (i + 1) not in na_borda and tam[i] >= 150 and media[i] <= tol * 0.35:
-            fundo |= rotulos == (i + 1)
+    internos = [i + 1 for i in range(n) if (i + 1) not in na_borda and tam[i] >= 150 and media[i] <= tol * 0.35]
+    if internos:
+        fundo |= np.isin(rotulos, internos)
     alfa = np.where(fundo, 0.0, 1.0)
     # faixa de 2 px em volta do fundo: transparência proporcional à diferença de cor
     faixa = ndimage.binary_dilation(fundo, iterations=2) & ~fundo
@@ -77,6 +80,40 @@ def remover_fundo(im, tol=TOLERANCIA):
     saida = im.convert('RGBA')
     saida.putalpha(Image.fromarray((alfa * 255).astype(np.uint8), 'L'))
     return saida
+
+
+def lentes_translucidas(im, alfa_lente=ALFA_LENTE):
+    """Acha a área das lentes (regiões lisas, sem bordas fortes, no meio de cada metade
+    do óculos) e deixa essas áreas levemente transparentes, como numa lente de verdade."""
+    import numpy as np
+    from scipy import ndimage
+    a = np.asarray(im).astype(np.float32)
+    rgb, alfa = a[..., :3], a[..., 3]
+    cinza = rgb.mean(axis=2)
+    suave = ndimage.gaussian_filter(cinza, 1.2)
+    borda = np.hypot(ndimage.sobel(suave, 0), ndimage.sobel(suave, 1))
+    liso = (borda < LIMITE_BORDA) & (alfa > 250)
+    rotulos, _ = ndimage.label(liso)
+    h, w = cinza.shape
+    lente = np.zeros_like(liso)
+    for fx in (0.27, 0.73):
+        for fy in (0.45, 0.55, 0.38):
+            rot = rotulos[int(h * fy), int(w * fx)]
+            if rot:
+                comp = rotulos == rot
+                if comp.sum() > 0.04 * h * w:      # só regiões grandes (lente, não um detalhe da armação)
+                    lente |= comp
+                    break
+    if not lente.any():
+        return im, 0.0
+    lente = ndimage.binary_fill_holes(lente)                    # inclui os reflexos de luz
+    lente = ndimage.binary_erosion(lente, iterations=2)         # não encosta na armação
+    novo_alfa = np.where(lente, np.minimum(alfa, 255 * alfa_lente), alfa)
+    novo_alfa = ndimage.gaussian_filter(novo_alfa, 0.7)
+    novo_alfa = np.where(alfa < 250, alfa, novo_alfa)
+    saida = im.copy()
+    saida.putalpha(Image.fromarray(novo_alfa.clip(0, 255).astype(np.uint8), 'L'))
+    return saida, float(lente.mean())
 
 
 def preparar(caminho, destino, tol=TOLERANCIA):
@@ -91,6 +128,7 @@ def preparar(caminho, destino, tol=TOLERANCIA):
     im = im.crop(caixa)
     if im.width > LARGURA_MAX:
         im = im.resize((LARGURA_MAX, round(im.height * LARGURA_MAX / im.width)), Image.LANCZOS)
+    im, _ = lentes_translucidas(im)
     im.save(destino, 'WEBP', quality=86, method=6)   # WebP com transparência: bem mais leve que PNG
     return im.size
 

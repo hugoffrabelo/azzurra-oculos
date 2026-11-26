@@ -49,4 +49,5 @@ Ao trocar de endereço, atualize `siteUrl` em `products.js`, rode `node tools/ge
 - Abre pelo ícone de óculos no card, pelo botão na visualização rápida, ou com `index.html?provar=<id do produto>` (usado nas páginas de produto).
 - Imagem do óculos: se existir `assets/images/provador/<id>.webp` (listado em `lista.json`), o provador usa a imagem real; senão usa a ilustração do `glasses-art.js`.
 - Para adicionar imagens reais: salve as imagens de frente na pasta `fotos-provador` (ao lado de `site`) com o nome igual ao ID e rode `python site/tools/preparar-provador.py`. Ele tira o fundo liso, corta, reduz e atualiza a `lista.json`. Prompts em `docs/prompts-provador.md`.
-- Ajuste fino da posição: `LARGURA_REAL` (largura do óculos x distância entre os olhos) e `OLHO_ALTURA` no topo do `provador.js`.
+- Ajuste fino: `LARGURA_ROSTO` (largura do óculos x largura do rosto) e `OLHO_ALTURA` no topo do `provador.js`; `ALFA_LENTE` (transparência das lentes) no `preparar-provador.py`.
+- Realismo: movimento suavizado (filtro One Euro), apoio na ponte do nariz, sombra da armação e brilho ajustado à luz da câmera.

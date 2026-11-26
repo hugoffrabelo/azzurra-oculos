@@ -26,8 +26,8 @@
   const AJUSTE = 1.12;
   // zoom máximo da câmera em tela cheia (1 = imagem inteira, sem corte)
   const ZOOM_MAX = 1.2;
-  // imagem real (PNG recortado): largura total do óculos em relação à distância entre os olhos
-  const LARGURA_REAL = 2.3;
+  // largura total do óculos em relação à largura do rosto (têmpora a têmpora)
+  const LARGURA_ROSTO = 1.0;
   // altura dos olhos dentro da imagem real (0 = topo da armação, 1 = base)
   const OLHO_ALTURA = 0.42;
   const PASTA_REAL = new URL('images/provador/', BASE).href;
@@ -127,28 +127,87 @@
     return { x: (espelhar ? 1 - x : x) * w, y: y * h, z: z * w };   // z do MediaPipe usa a mesma escala do x
   }
 
-  function desenharOculos(pts, w, h, espelhar) {
+  /* Filtro "One Euro": segura os tremores pequenos dos pontos do rosto sem atrasar
+     os movimentos de verdade (quanto mais rápido o movimento, menos suaviza). */
+  function filtro(minCorte = 1.2, beta = 0.02, dCorte = 1.0) {
+    let xAnt = null, dxAnt = 0, tAnt = 0;
+    const alfa = (corte, dt) => { const r = 2 * Math.PI * corte * dt; return r / (r + 1); };
+    return (x, t) => {
+      if (xAnt === null) { xAnt = x; tAnt = t; return x; }
+      const dt = Math.max((t - tAnt) / 1000, 1e-3); tAnt = t;
+      const dx = (x - xAnt) / dt;
+      dxAnt += alfa(dCorte, dt) * (dx - dxAnt);
+      const corte = minCorte + beta * Math.abs(dxAnt);
+      xAnt += alfa(corte, dt) * (x - xAnt);
+      return xAnt;
+    };
+  }
+  let filtros = null;
+  function zerarFiltros() {
+    filtros = { x: filtro(), y: filtro(), larg: filtro(0.8, 0.004), ang: filtro(1.5, 0.3), achatar: filtro(0.8, 0.3) };
+  }
+
+  const ponto = (p, w, h, espelhar) => ({ x: (espelhar ? 1 - p.x : p.x) * w, y: p.y * h, z: p.z * w });
+
+  // luz do ambiente: medida no rosto de tempos em tempos para escurecer/clarear o óculos
+  const amostra = document.createElement('canvas');
+  amostra.width = amostra.height = 12;
+  const actx = amostra.getContext('2d', { willReadFrequently: true });
+  let brilho = 1, quadros = 0;
+  function medirLuz(cx, cy, tam) {
+    try {
+      actx.drawImage(canvas, cx - tam / 2, cy - tam * 0.2, tam, tam * 0.6, 0, 0, 12, 12);
+      const d = actx.getImageData(0, 0, 12, 12).data;
+      let soma = 0;
+      for (let i = 0; i < d.length; i += 4) soma += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      const luz = soma / (d.length / 4) / 255;                 // 0 (escuro) a 1 (claro)
+      const alvo = Math.min(1.06, Math.max(0.62, 0.5 + luz * 0.75));
+      brilho += (alvo - brilho) * 0.3;
+    } catch (e) { /* sem acesso aos pixels: mantém o brilho */ }
+  }
+
+  function desenharOculos(pts, w, h, espelhar, suavizar) {
     if (!pts || !oculosImg) return;
     let a = centroOlho(pts, OLHO_A, w, h, espelhar);
     let b = centroOlho(pts, OLHO_B, w, h, espelhar);
     if (a.x > b.x) [a, b] = [b, a];
-    const dist2d = Math.hypot(b.x - a.x, b.y - a.y);
-    // distância real entre os olhos (com profundidade): com a cabeça virada, a distância
-    // na tela "encolhe"; o tamanho usa a real e o óculos é achatado na horizontal
-    const dist = Math.max(dist2d, Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z));
-    const achatar = Math.max(0.55, dist2d / dist);
-    const ang = Math.atan2(b.y - a.y, b.x - a.x);
+    // largura do rosto (têmpora a têmpora) com profundidade: referência de tamanho estável
+    const t1 = ponto(pts[234], w, h, espelhar), t2 = ponto(pts[454], w, h, espelhar);
+    const rosto2d = Math.hypot(t2.x - t1.x, t2.y - t1.y);
+    const rosto3d = Math.max(rosto2d, Math.hypot(t2.x - t1.x, t2.y - t1.y, t2.z - t1.z));
+    // apoio: ponte do nariz (ponto 168) na horizontal, linha dos olhos na vertical
+    const ponte = ponto(pts[168], w, h, espelhar);
+    let cx = (ponte.x + (a.x + b.x) / 2) / 2;
+    let cy = (a.y + b.y) / 2;
+    let ang = Math.atan2(b.y - a.y, b.x - a.x);
+    let larg = rosto3d;
+    let achatar = Math.max(0.55, rosto2d / rosto3d);
+    if (suavizar) {
+      if (!filtros) zerarFiltros();
+      const t = performance.now();
+      cx = filtros.x(cx, t); cy = filtros.y(cy, t); larg = filtros.larg(larg, t);
+      ang = filtros.ang(ang, t); achatar = filtros.achatar(achatar, t);
+      if (++quadros % 8 === 1) medirLuz(cx, cy, larg * 0.5);
+    } else {
+      medirLuz(cx, cy, larg * 0.5);
+    }
+    // largura total do óculos (px) a partir da largura do rosto
+    const lw = larg * LARGURA_ROSTO;
     ctx.save();
-    ctx.translate((a.x + b.x) / 2, (a.y + b.y) / 2);
+    // sombra suave da armação no rosto (luz vindo de cima)
+    ctx.shadowColor = 'rgba(25, 15, 10, 0.38)';
+    ctx.shadowBlur = lw * 0.025;
+    ctx.shadowOffsetY = lw * 0.022;
+    if ('filter' in ctx) ctx.filter = `brightness(${brilho.toFixed(3)}) saturate(0.95)`;
+    ctx.translate(cx, cy);
     ctx.rotate(ang);
     ctx.scale(achatar, 1);
     if (oculosImg.real) {
-      // foto recortada: a largura total acompanha a distância entre os olhos
-      const lw = dist * LARGURA_REAL, lh = oculosImg.img.height * lw / oculosImg.img.width;
+      const lh = oculosImg.img.height * lw / oculosImg.img.width;
       ctx.drawImage(oculosImg.img, -lw / 2, -lh * OLHO_ALTURA, lw, lh);
     } else {
       const dx = DX[produto.formato] || 64;
-      const esc = AJUSTE * dist / (2 * dx);               // unidades do desenho -> pixels
+      const esc = lw / (2 * (dx + 80));                       // largura do desenho: lentes ±dx + hastes
       ctx.scale(esc, esc);
       ctx.drawImage(oculosImg.img, -200, -100, 400, 200);
     }
@@ -199,8 +258,8 @@
       ultimoTempo = agora;
       const r = landmarker.detectForVideo(video, agora);
       const pts = r.faceLandmarks && r.faceLandmarks[0];
-      if (pts) { desenharOculos(pts, w, h, true); enquadrar(pts); esconderStatus(); }
-      else mostrarStatus('Posicione o rosto de frente para a câmera');
+      if (pts) { desenharOculos(pts, w, h, true, true); enquadrar(pts); esconderStatus(); }
+      else { zerarFiltros(); mostrarStatus('Posicione o rosto de frente para a câmera'); }
       pintarFundo();
     }
     loop = requestAnimationFrame(quadroCamera);
@@ -213,7 +272,7 @@
     const w = Math.round(foto.width * s), h = Math.round(foto.height * s);
     canvas.width = w; canvas.height = h;
     ctx.drawImage(foto, 0, 0, w, h);
-    desenharOculos(pontosFoto, w, h, false);
+    desenharOculos(pontosFoto, w, h, false, false);
     pintarFundo();
   }
 
