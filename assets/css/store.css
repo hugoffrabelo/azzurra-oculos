@@ -120,6 +120,23 @@ a.blog-card:hover .blog-title { color: var(--azul-logo); }
 }
 a.blog-card:hover .blog-ler { text-decoration: underline; }
 .blog-container { padding-bottom: 20px; }
+/* Guia: no celular, cards em carrossel mostrando a ponta do próximo (para ficar claro que há mais);
+   do tablet para cima, todas as matérias visíveis em grade, sem rolagem lateral */
+@media (max-width: 569px) {
+  .blog-card { min-width: 82%; }
+}
+@media (min-width: 570px) {
+  .blog-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px;
+    overflow: visible;
+  }
+  .blog-card { min-width: 0; }
+}
+@media (min-width: 1024px) {
+  .blog-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 .payment-methods {
   color: var(--sonic-silver);
