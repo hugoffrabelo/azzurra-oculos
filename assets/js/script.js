@@ -258,6 +258,9 @@ function renderGrade() {
             <button class="btn-action ${fav ? 'is-fav' : ''}" data-fav="${p.id}" aria-label="Favoritar">
               <ion-icon name="${fav ? 'heart' : 'heart-outline'}"></ion-icon>
             </button>
+            <button class="btn-action" data-provar="${p.id}" aria-label="Experimentar no rosto" title="Experimentar no rosto">
+              <ion-icon name="glasses-outline"></ion-icon>
+            </button>
             <button class="btn-action" data-quickview-open="${p.id}" aria-label="Ver detalhes">
               <ion-icon name="eye-outline"></ion-icon>
             </button>
@@ -437,6 +440,7 @@ function openQuickview(id) {
           <li><ion-icon name="shield-checkmark-outline"></ion-icon> Acompanha estojo e flanela</li>
         </ul>
         <button class="add-cart-btn" data-add="${p.id}" data-close-qv ${p.estoque ? '' : 'disabled'}>adicionar à sacola</button>
+        <button class="provador-btn provador-btn--claro qv-provar" data-provar="${p.id}" data-close-qv>Experimentar no rosto</button>
       </div>
     </div>`;
   qv.hidden = false;
@@ -546,7 +550,7 @@ function aplicarFiltro(str) {
 }
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-filter],[data-add],[data-fav],[data-quickview-open],[data-quickview-close],[data-cart-open],[data-cart-close],[data-qty],[data-remove],[data-checkout],[data-clear-filter],[data-wish-show]');
+  const t = e.target.closest('[data-filter],[data-add],[data-fav],[data-quickview-open],[data-quickview-close],[data-cart-open],[data-cart-close],[data-qty],[data-remove],[data-checkout],[data-clear-filter],[data-wish-show],[data-provar]');
   if (!t) return;
 
   if (t.matches('[data-filter]')) {
@@ -569,6 +573,10 @@ document.addEventListener('click', e => {
   }
   else if (t.matches('[data-remove]')) setQty(t.dataset.remove, 0);
   else if (t.matches('[data-checkout]')) checkout();
+  else if (t.matches('[data-provar]')) {
+    if (t.hasAttribute('data-close-qv')) closeQuickview();
+    if (window.AzzurraProvador) window.AzzurraProvador.abrir(t.dataset.provar);
+  }
   else if (t.matches('[data-clear-filter]')) aplicarFiltro('');
   else if (t.matches('[data-wish-show]')) {
     aplicarFiltro('favoritos:sim');
@@ -627,6 +635,9 @@ bindAccordions();
   }
   // ?sacola=1 abre a sacola (usado pelo botão "Adicionar à sacola" das páginas de produto)
   if (params.get('sacola') === '1') openCart();
+  // ?provar=<id> abre o provador virtual (usado pelas páginas de produto)
+  const provar = params.get('provar');
+  if (provar && byId(provar)) window.addEventListener('load', () => window.AzzurraProvador && window.AzzurraProvador.abrir(provar));
 })();
 
 /* =========================================================

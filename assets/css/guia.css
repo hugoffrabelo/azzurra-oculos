@@ -224,6 +224,8 @@
 .produto-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .produto-btn--whats { background: transparent; color: var(--azul-logo); border: 2px solid var(--azul-logo); }
 .produto-btn--whats:hover { background: var(--azul-logo); color: #ffffff; }
+.produto-btn--provar { background: #eef1fb; color: var(--azul-logo); border: 2px solid #eef1fb; }
+.produto-btn--provar:hover { border-color: var(--azul-logo); }
 .produto-frete { font-size: var(--fs-8); color: var(--sonic-silver); margin-top: 12px; text-align: center; }
 
 .produto .artigo-mais { margin-top: 50px; }

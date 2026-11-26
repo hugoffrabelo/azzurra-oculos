@@ -146,6 +146,7 @@ ${JSON.stringify(ld, null, 2).replace(/^/gm, '  ')}
 
         <div class="produto-acoes">
           <button class="produto-btn" data-adicionar="${p.id}" ${p.estoque > 0 ? '' : 'disabled'}>Adicionar à sacola</button>
+          <a class="produto-btn produto-btn--provar" href="../index.html?provar=${p.id}">Experimentar no rosto</a>
           <a class="produto-btn produto-btn--whats" href="https://wa.me/${LOJA.whatsapp}?text=${msgWhats}" target="_blank" rel="noopener">Tirar dúvida no WhatsApp</a>
         </div>
         <p class="produto-frete">Frete grátis acima de ${brl(LOJA.freteGratisAcima)} · Troca fácil em até 7 dias após o recebimento</p>

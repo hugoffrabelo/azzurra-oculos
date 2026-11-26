@@ -11,7 +11,7 @@ const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
   '.webp': 'image/webp', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.woff': 'font/woff',
-  '.ttf': 'font/ttf', '.otf': 'font/otf', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8'
+  '.ttf': 'font/ttf', '.otf': 'font/otf', '.mjs': 'text/javascript; charset=utf-8', '.wasm': 'application/wasm', '.task': 'application/octet-stream', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8'
 };
 // Só estas pastas/arquivos são públicos. docs/, tools/, README, .git e qualquer arquivo oculto ficam bloqueados.
 const PUBLICO = [

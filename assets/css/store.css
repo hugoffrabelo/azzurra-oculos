@@ -938,3 +938,70 @@ footer { background: var(--grad-royal-dark); }
 @media (min-width: 1024px) { .cookies { bottom: 20px; left: 20px; right: auto; margin: 0; } }
 .guia-rodape a { color: #a7c7ff; }
 .cookies-texto a { display: inline; }
+
+/* =========================================================
+ * PROVADOR VIRTUAL (assets/js/provador.js)
+ * ========================================================= */
+.provador {
+  position: fixed; inset: 0; z-index: 30;
+  background: rgba(20, 18, 60, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.provador[hidden] { display: none; }
+.provador-caixa {
+  position: relative;
+  width: 100%; max-width: 560px; max-height: calc(100vh - 32px); overflow-y: auto;
+  background: #fff; border-radius: 14px; padding: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.provador-fechar {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--azul-logo); color: #fff; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.provador-titulo {
+  font-family: var(--font-logo); font-weight: 600; font-size: 1.4rem;
+  color: var(--azul-logo); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.provador-palco {
+  position: relative; background: #eef1f8; border-radius: 10px; overflow: hidden;
+  aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
+}
+.provador-canvas { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; display: block; }
+.provador-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.provador-inicio {
+  position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px;
+  align-items: center; justify-content: center; text-align: center; color: var(--azul-logo); padding: 20px;
+}
+.provador-inicio ion-icon { font-size: 54px; }
+.provador-inicio p { font-size: 0.95rem; color: var(--sonic-silver); }
+.provador-status {
+  position: absolute; left: 10px; right: 10px; bottom: 10px;
+  background: rgba(255, 255, 255, 0.92); color: var(--eerie-black);
+  border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; text-align: center;
+}
+.provador-status[hidden] { display: none; }
+.provador-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.provador-btn {
+  background: var(--azul-logo); color: #fff; border: 2px solid var(--azul-logo);
+  border-radius: 8px; padding: 10px 12px; font-weight: 600; font-size: 0.85rem;
+}
+.provador-btn:hover { background: var(--royal-1); border-color: var(--royal-1); }
+.provador-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.provador-btn--claro { background: #fff; color: var(--azul-logo); }
+.provador-btn--claro:hover { background: #eef1f8; color: var(--azul-logo); }
+.provador-lista { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+.provador-item {
+  flex: 0 0 76px; height: 46px; border-radius: 8px; border: 2px solid var(--cultured);
+  background: #f6f7fb; padding: 4px; scroll-snap-align: start;
+}
+.provador-item img { width: 100%; height: 100%; object-fit: contain; }
+.provador-item[aria-pressed="true"] { border-color: var(--azul-logo); background: #eef1fb; }
+.provador-rodape { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.provador-nome { flex: 1 1 100%; font-weight: 600; color: var(--eerie-black); }
+.provador-rodape .provador-btn { flex: 1; }
+.provador-aviso { margin-top: 10px; font-size: 0.75rem; color: var(--sonic-silver); line-height: 1.4; }
+.qv-provar { margin-top: 10px; width: 100%; }
+.provador input[type="file"] { display: none; }

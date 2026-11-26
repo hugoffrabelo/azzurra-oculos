@@ -42,3 +42,9 @@ Ao trocar de endereço, atualize `siteUrl` em `products.js`, rode `node tools/ge
 ## Ícones e fontes (hospedados no próprio site)
 - Ícones: Ionicons 5.5.2 em `assets/vendor/ionicons/` (licença MIT). Só os ícones usados estão em `svg/`; para usar um ícone novo, copie o SVG dele do pacote `ionicons@5.5.2` para essa pasta.
 - Fontes: Poppins, Bebas Neue, Parisienne e Playfair Display em `assets/fonts/` (licença SIL OFL), declaradas em `assets/css/fonts.css`.
+
+## Provador virtual
+- `assets/js/provador.js`: a pessoa usa a câmera ou envia uma foto; o MediaPipe Face Landmarker (Google, Apache 2.0) acha os olhos e o óculos é desenhado por cima. Tudo roda no navegador, nada é enviado.
+- Arquivos do MediaPipe em `assets/vendor/mediapipe/` (`@mediapipe/tasks-vision` 1.2.3 e o modelo `face_landmarker.task`). Só são baixados quando alguém abre o provador.
+- Abre pelo ícone de óculos no card, pelo botão na visualização rápida, ou com `index.html?provar=<id do produto>` (usado nas páginas de produto).
+- Hoje o óculos é a ilustração de frente do `glasses-art.js`. Para ficar realista, o próximo passo é ter uma imagem PNG de frente de cada modelo com fundo transparente.
